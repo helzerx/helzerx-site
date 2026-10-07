@@ -192,7 +192,7 @@ export const AdminPage: React.FC = () => {
   };
 
   return (
-    <div className="py-12 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 animate-in fade-in duration-300">
+    <div className="helzerx-admin-page fixed inset-0 z-[80] min-h-screen overflow-y-auto bg-[radial-gradient(circle_at_15%_10%,rgba(59,130,246,0.16),transparent_32%),radial-gradient(circle_at_85%_90%,rgba(99,102,241,0.12),transparent_34%),linear-gradient(135deg,#f8fbff_0%,#eef5ff_48%,#f8fbff_100%)] py-8 sm:py-10"><div className="max-w-[1500px] mx-auto px-4 sm:px-6 lg:px-8 animate-in fade-in duration-300">
       {/* Header */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-8 pb-6 border-b border-white/10">
         <div>
@@ -2549,6 +2549,7 @@ export const AdminPage: React.FC = () => {
           </div>
         </div>
       )}
+    </div>
     </div>
   );
 };
