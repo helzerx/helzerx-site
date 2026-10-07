@@ -19,9 +19,9 @@ export const AuthExperience: React.FC<{ mode: AuthMode }> = ({ mode }) => {
     const previousBackground = document.body.style.background;
     const previousColor = document.body.style.color;
 
-    document.documentElement.style.background = '#05070b';
+    document.documentElement.style.background = '#f8fbff';
     document.body.style.overflow = 'hidden';
-    document.body.style.background = '#05070b';
+    document.body.style.background = '#f8fbff';
     document.body.style.color = '#fff';
 
     setAuthModalTab(mode);
@@ -40,14 +40,14 @@ export const AuthExperience: React.FC<{ mode: AuthMode }> = ({ mode }) => {
   return (
     <main
       aria-label={mode === 'login' ? 'HelzerX Login' : 'HelzerX Sign Up'}
-      className="fixed inset-0 z-[2147483647] min-h-screen w-screen overflow-hidden bg-[#05070b]"
+      className="fixed inset-0 z-[2147483647] min-h-screen w-screen overflow-hidden bg-[#f8fbff]"
       style={{
         position: 'fixed',
         inset: 0,
         width: '100vw',
         height: '100vh',
         minHeight: '100dvh',
-        background: '#05070b',
+        background: 'radial-gradient(circle at 18% 15%, rgba(191, 219, 254, 0.72), transparent 34%), radial-gradient(circle at 84% 80%, rgba(219, 234, 254, 0.9), transparent 38%), linear-gradient(135deg, #ffffff 0%, #f7fbff 48%, #eef7ff 100%)',
         isolation: 'isolate',
       }}
     >
