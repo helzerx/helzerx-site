@@ -6,7 +6,7 @@ import { AuthModal } from './AuthModal';
 type AuthMode = 'login' | 'register';
 
 export const AuthExperience: React.FC<{ mode: AuthMode }> = ({ mode }) => {
-  const { setAuthModalTab, setIsAuthModalOpen } = useApp();
+  const { isAuthModalOpen, setAuthModalTab, setIsAuthModalOpen } = useApp();
   const [phase, setPhase] = useState<'boot' | 'jump' | 'ready'>('boot');
 
   useEffect(() => {
@@ -24,6 +24,11 @@ export const AuthExperience: React.FC<{ mode: AuthMode }> = ({ mode }) => {
       window.clearTimeout(readyTimer);
     };
   }, [mode, setAuthModalTab, setIsAuthModalOpen]);
+
+  useEffect(() => {
+    if (phase !== 'ready' || isAuthModalOpen) return;
+    window.location.assign('/');
+  }, [phase, isAuthModalOpen]);
 
   const goHome = () => {
     window.location.assign('/');
