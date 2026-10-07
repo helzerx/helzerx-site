@@ -1587,69 +1587,13 @@ async function start() {
     });
   });
 
-  // Social Login & Sign Up (Google, Apple ID, Facebook) with full database persistence
-  app.post('/api/auth/social-login', async (req, res) => {
-    const provider = String(req.body?.provider || 'google').toLowerCase(); // 'google' | 'apple' | 'facebook'
-    const email = String(req.body?.email || '').trim().toLowerCase();
-    const name = String(req.body?.name || '').trim() || (provider === 'google' ? 'Google User' : provider === 'apple' ? 'Apple ID User' : 'Facebook User');
-    const avatar = String(req.body?.avatar || '');
-
-    if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-      return res.status(400).json({ error: 'Valid email address is required for social authentication.' });
-    }
-
-    if (!['google', 'apple', 'facebook'].includes(provider)) {
-      return res.status(400).json({ error: 'Unsupported social authentication provider.' });
-    }
-
-    const defaultAvatars: Record<string, string> = {
-      google: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=200&q=80',
-      apple: 'https://images.unsplash.com/photo-1570295999919-56ceb5ecca61?auto=format&fit=crop&w=200&q=80',
-      facebook: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=200&q=80',
-    };
-
-    const users = await readJson<any[]>(USERS_FILE, []);
-    let user = users.find((u) => u.email === email);
-    const isNewUser = !user;
-
-    if (user) {
-      if (user.banned) {
-        return res.status(403).json({ error: 'This account has been suspended.' });
-      }
-      user.lastLoginAt = new Date().toISOString();
-      user.lastProvider = provider;
-      if (avatar && !user.avatar) user.avatar = avatar;
-    } else {
-      user = {
-        id: `usr-${provider}-${crypto.randomUUID()}`,
-        name,
-        email,
-        role: 'customer',
-        provider,
-        avatar: avatar || defaultAvatars[provider] || defaultAvatars.google,
-        emailVerified: true,
-        createdAt: new Date().toISOString(),
-        lastLoginAt: new Date().toISOString(),
-      };
-      users.push(user);
-    }
-
-    await atomicWrite(USERS_FILE, users);
-
-    await appendSecurityLog({
-      actor: email,
-      type: isNewUser ? 'social_register_success' : 'social_login_success',
-      provider,
-      ip: req.ip || '127.0.0.1',
-      userAgent: req.headers['user-agent'] || 'Browser',
-      details: isNewUser ? `Registered via ${provider.toUpperCase()}` : `Logged in via ${provider.toUpperCase()}`,
-      severity: 'info',
+  // Social authentication is fail-closed until a provider-side OAuth/OIDC
+  // implementation verifies the identity with the provider. Client-supplied
+  // email/name fields are never accepted as proof of identity.
+  app.post('/api/auth/social-login', (_req, res) => {
+    res.status(501).json({
+      error: 'Social authentication is not configured. Please use email authentication.',
     });
-
-    const sessionId = createSession(user);
-    setSessionCookie(res, sessionId);
-
-    res.json({ ok: true, user: publicUser(user), isNewUser });
   });
 
   // Admin Security Logs

@@ -147,15 +147,34 @@ const AuthModalContent: React.FC = () => {
 
   if (!isAuthModalOpen) return null;
 
+  const isDedicatedAuthPage =
+    typeof window !== 'undefined' &&
+    ['/login', '/signup', '/register'].includes(window.location.pathname.toLowerCase());
+
+  const leaveAuthPage = (destination = '/') => {
+    if (busy) return;
+    window.location.assign(destination);
+  };
+
   const close = () => {
     if (busy) return;
     setIsAuthModalOpen(false);
     setErrorMsg('');
     setSuccessMsg('');
     setChallengeId('');
+
+    // Dedicated authentication pages must never fall back to a blank auth shell.
+    // After a successful/closed auth flow, return to the public site.
+    if (isDedicatedAuthPage) {
+      window.location.assign('/');
+    }
   };
 
   const handleTabChange = (tab: 'login' | 'register' | 'admin') => {
+    if (isDedicatedAuthPage && tab !== 'admin') {
+      window.location.assign(tab === 'register' ? '/signup' : '/login');
+      return;
+    }
     setAuthModalTab(tab);
     setErrorMsg('');
     setSuccessMsg('');
@@ -479,21 +498,14 @@ const AuthModalContent: React.FC = () => {
     }
   };
 
-  // Social Auth Click Handlers
+  // Social buttons stay fail-closed until a real provider OAuth/OIDC flow is configured.
   const handleSocialClick = (provider: 'google' | 'apple' | 'facebook') => {
     setErrorMsg('');
     setSuccessMsg('');
-    const defaults = {
-      google: { email: 'alex.perera@gmail.com', name: 'Alex Perera' },
-      apple: { email: 'alex.cloud@icloud.com', name: 'Alex Apple ID' },
-      facebook: { email: 'alex.perera@facebook.com', name: 'Alex Perera' },
-    };
-    setSocialPrompt({
-      open: true,
-      provider,
-      email: defaults[provider].email,
-      name: defaults[provider].name,
-    });
+    setSocialPrompt(null);
+    setErrorMsg(
+      `${provider[0].toUpperCase() + provider.slice(1)} sign-in is not enabled yet. Please use email authentication with verification.`
+    );
   };
 
   const confirmSocialAuth = async () => {
@@ -521,20 +533,28 @@ const AuthModalContent: React.FC = () => {
   const isRegisterTab = authModalTab === 'register';
 
   return (
-    <div className="fixed inset-0 z-[100] flex items-center justify-center bg-slate-900/60 p-3 sm:p-6 backdrop-blur-md overflow-y-auto animate-in fade-in duration-200">
+    <div
+      className={
+        isDedicatedAuthPage
+          ? "fixed inset-0 z-[100] flex min-h-screen items-center justify-center bg-[#f8fafc] p-3 sm:p-6 overflow-y-auto animate-in fade-in duration-200"
+          : "fixed inset-0 z-[100] flex items-center justify-center bg-slate-900/60 p-3 sm:p-6 backdrop-blur-md overflow-y-auto animate-in fade-in duration-200"
+      }
+    >
       
       {/* Outer Card matching Dribbble Picture: Wide rounded-3xl container */}
       <div className={`relative w-full ${isRegisterTab ? 'max-w-[1080px]' : 'max-w-[980px]'} overflow-hidden rounded-[36px] bg-white shadow-[0_30px_90px_-20px_rgba(76,29,149,0.35)] border border-slate-100 flex flex-col lg:flex-row my-auto transition-all`}>
         
-        {/* Close Button floating top-right */}
-        <button
-          type="button"
-          onClick={close}
-          className="absolute right-5 top-5 z-30 flex h-9 w-9 items-center justify-center rounded-full bg-slate-900/10 hover:bg-slate-900/20 text-slate-700 hover:text-slate-900 backdrop-blur-md transition cursor-pointer"
-          title="Close"
-        >
-          <X className="h-4 w-4" />
-        </button>
+        {/* Public modal close button is hidden on dedicated auth routes. */}
+        {!isDedicatedAuthPage && (
+          <button
+            type="button"
+            onClick={close}
+            className="absolute right-5 top-5 z-30 flex h-9 w-9 items-center justify-center rounded-full bg-slate-900/10 hover:bg-slate-900/20 text-slate-700 hover:text-slate-900 backdrop-blur-md transition cursor-pointer"
+            title="Close"
+          >
+            <X className="h-4 w-4" />
+          </button>
+        )}
 
         {/* LEFT COLUMN: Clean White Form Zone (Picture Authentic) */}
         <div className={`w-full ${isRegisterTab ? 'lg:w-[58%]' : 'lg:w-[54%]'} p-6 sm:p-10 lg:p-12 flex flex-col justify-between relative bg-white`}>
@@ -1104,7 +1124,13 @@ const AuthModalContent: React.FC = () => {
                 {!challengeId && mode !== 'forgot' && (
                   <button
                     type="button"
-                    onClick={() => handleTabChange(authModalTab === 'login' ? 'register' : 'login')}
+                    onClick={() => {
+                      if (isDedicatedAuthPage) {
+                        leaveAuthPage(authModalTab === 'login' ? '/signup' : '/login');
+                        return;
+                      }
+                      handleTabChange(authModalTab === 'login' ? 'register' : 'login');
+                    }}
                     className="text-sm font-semibold text-[#8e92a4] hover:text-[#7934f5] transition cursor-pointer"
                   >
                     {authModalTab === 'login' ? 'Sign up' : 'Login'}
