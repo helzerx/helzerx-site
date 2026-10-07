@@ -5,27 +5,23 @@ import { TextGeometry } from 'three/addons/geometries/TextGeometry.js';
 
 type Phase = 'boot' | 'logo' | 'settle' | 'reveal' | 'ready';
 
-const FONT_URL = 'https://threejs.org/examples/fonts/helvetiker_bold.typeface.json';
+const FONT_URL =
+  'https://threejs.org/examples/fonts/helvetiker_bold.typeface.json';
 
 export const HelzerX3DLogo: React.FC<{ phase: Phase }> = ({ phase }) => {
   const mountRef = useRef<HTMLDivElement>(null);
   const phaseRef = useRef(phase);
-
-  useEffect(() => {
-    phaseRef.current = phase;
-  }, [phase]);
+  useEffect(() => { phaseRef.current = phase; }, [phase]);
 
   useEffect(() => {
     const mount = mountRef.current;
     if (!mount) return;
 
-    let disposed = false;
-    let frame = 0;
     const scene = new THREE.Scene();
-    scene.fog = new THREE.FogExp2(0x020204, 0.035);
+    scene.background = new THREE.Color(0x020204);
 
-    const camera = new THREE.PerspectiveCamera(28, 1, 0.1, 100);
-    camera.position.set(0, 0, 10.8);
+    const camera = new THREE.PerspectiveCamera(31, 1, 0.1, 100);
+    camera.position.set(0, 0.25, 10.5);
 
     const renderer = new THREE.WebGLRenderer({
       antialias: true,
@@ -35,144 +31,142 @@ export const HelzerX3DLogo: React.FC<{ phase: Phase }> = ({ phase }) => {
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     renderer.outputColorSpace = THREE.SRGBColorSpace;
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
-    renderer.toneMappingExposure = 1.18;
+    renderer.toneMappingExposure = 1.15;
+    renderer.shadowMap.enabled = true;
     mount.appendChild(renderer.domElement);
 
-    const ambient = new THREE.HemisphereLight(0xffffff, 0x07070b, 1.15);
-    scene.add(ambient);
+    scene.add(new THREE.HemisphereLight(0x8790a8, 0x050507, 1.7));
 
-    const key = new THREE.DirectionalLight(0xffffff, 4.8);
-    key.position.set(-4, 5, 8);
+    const key = new THREE.DirectionalLight(0xffffff, 3.6);
+    key.position.set(-3, 4, 7);
     scene.add(key);
 
-    const rim = new THREE.PointLight(0xff163f, 18, 12, 2);
-    rim.position.set(-3, 0.4, 4);
-    scene.add(rim);
+    const redLight = new THREE.PointLight(0xff123f, 15, 9, 2);
+    redLight.position.set(0, 0.4, 2);
+    scene.add(redLight);
 
-    const fill = new THREE.PointLight(0x9ca3ff, 7, 10, 2);
-    fill.position.set(4, 1.5, 5);
-    scene.add(fill);
+    const whiteLight = new THREE.PointLight(0xffffff, 5, 7, 2);
+    whiteLight.position.set(3, 1.8, 4);
+    scene.add(whiteLight);
 
-    const logo = new THREE.Group();
-    logo.position.set(0, 0.08, 0);
-    logo.rotation.set(0, 0, 0);
-    logo.scale.setScalar(0.62);
-    scene.add(logo);
+    const logoRoot = new THREE.Group();
+    scene.add(logoRoot);
 
-    const glow = new THREE.Mesh(
-      new THREE.PlaneGeometry(9.5, 2.8),
-      new THREE.MeshBasicMaterial({
-        color: 0xc8102e,
-        transparent: true,
-        opacity: 0,
-        depthWrite: false,
-        blending: THREE.AdditiveBlending,
-      })
-    );
-    glow.position.set(0, -0.05, -0.9);
-    scene.add(glow);
+    const letters: Array<{
+      front: THREE.Mesh;
+      back: THREE.Mesh;
+      targetX: number;
+      delay: number;
+      seed: number;
+    }> = [];
 
-    const ring = new THREE.Mesh(
-      new THREE.RingGeometry(2.25, 2.265, 128),
-      new THREE.MeshBasicMaterial({
-        color: 0xff234d,
-        transparent: true,
-        opacity: 0,
-        side: THREE.DoubleSide,
-        depthWrite: false,
-        blending: THREE.AdditiveBlending,
-      })
-    );
-    ring.scale.set(1.9, 0.48, 1);
-    ring.rotation.x = 0.18;
-    ring.position.z = -0.45;
-    scene.add(ring);
-
-    const particles = new THREE.BufferGeometry();
-    const particleCount = 260;
-    const positions = new Float32Array(particleCount * 3);
-    for (let i = 0; i < particleCount; i++) {
-      const radius = 3.2 + Math.random() * 5.5;
-      const angle = Math.random() * Math.PI * 2;
-      positions[i * 3] = Math.cos(angle) * radius;
-      positions[i * 3 + 1] = (Math.random() - 0.5) * 4.5;
-      positions[i * 3 + 2] = -1.5 - Math.random() * 5;
-    }
-    particles.setAttribute('position', new THREE.BufferAttribute(positions, 3));
-    const particleMaterial = new THREE.PointsMaterial({
-      color: 0xff3158,
-      size: 0.014,
-      transparent: true,
-      opacity: 0,
-      depthWrite: false,
-      blending: THREE.AdditiveBlending,
-    });
-    const particleField = new THREE.Points(particles, particleMaterial);
-    scene.add(particleField);
-
-    const frontMaterial = new THREE.MeshStandardMaterial({
-      color: 0xf8fafc,
-      metalness: 0.82,
-      roughness: 0.18,
-      emissive: 0x180006,
-      emissiveIntensity: 0.34,
-      transparent: true,
-      opacity: 1,
-    });
-
-    const edgeMaterial = new THREE.MeshStandardMaterial({
-      color: 0xc8102e,
-      metalness: 0.9,
+    const frontMat = new THREE.MeshStandardMaterial({
+      color: 0xf4f4f5,
+      metalness: 0.72,
       roughness: 0.2,
-      emissive: 0x5a0012,
-      emissiveIntensity: 0.72,
-      transparent: true,
-      opacity: 1,
+      emissive: 0x250007,
+      emissiveIntensity: 0.55,
+    });
+
+    const redMat = new THREE.MeshStandardMaterial({
+      color: 0xc8102e,
+      metalness: 0.78,
+      roughness: 0.22,
+      emissive: 0x4d0010,
+      emissiveIntensity: 0.85,
     });
 
     const loader = new FontLoader();
-    let geometry: THREE.TextGeometry | null = null;
-    let textMesh: THREE.Mesh | null = null;
-    let edgeMesh: THREE.Mesh | null = null;
+    let disposed = false;
 
     loader.load(FONT_URL, (font) => {
       if (disposed) return;
 
-      geometry = new TextGeometry('HELZERX', {
-        font,
-        size: 1.08,
-        depth: 0.28,
-        curveSegments: 12,
-        bevelEnabled: true,
-        bevelThickness: 0.065,
-        bevelSize: 0.038,
-        bevelSegments: 5,
-      });
+      const word = 'HELZERX';
+      const size = 1.02;
+      const depth = 0.24;
+      const gap = 0.055;
+      const built: THREE.Group[] = [];
 
-      geometry.computeBoundingBox();
-      const center = new THREE.Vector3();
-      geometry.boundingBox?.getCenter(center);
-      geometry.translate(-center.x, -center.y, -center.z);
+      for (const char of word) {
+        const geometry = new TextGeometry(char, {
+          font,
+          size,
+          depth,
+          curveSegments: 8,
+          bevelEnabled: true,
+          bevelThickness: 0.055,
+          bevelSize: 0.032,
+          bevelSegments: 4,
+        });
+        geometry.computeBoundingBox();
 
-      textMesh = new THREE.Mesh(geometry, frontMaterial);
-      textMesh.position.z = 0.08;
-      logo.add(textMesh);
+        const center = new THREE.Vector3();
+        geometry.boundingBox?.getCenter(center);
+        geometry.translate(-center.x, -center.y, -center.z);
 
-      const edgeGeometry = geometry.clone();
-      edgeMesh = new THREE.Mesh(edgeGeometry, edgeMaterial);
-      edgeMesh.scale.setScalar(1.004);
-      edgeMesh.position.z = -0.08;
-      logo.add(edgeMesh);
+        const front = new THREE.Mesh(geometry, frontMat);
+        front.castShadow = true;
+        front.receiveShadow = true;
+
+        const backGeometry = geometry.clone();
+        backGeometry.translate(0, 0, -0.10);
+        const back = new THREE.Mesh(backGeometry, redMat);
+
+        const group = new THREE.Group();
+        group.add(back, front);
+
+        const box = new THREE.Box3().setFromObject(group);
+        const width = box.max.x - box.min.x;
+        built.push(group);
+        letters.push({
+          front,
+          back,
+          targetX: width,
+          delay: letters.length * 0.075,
+          seed: letters.length * 1.73 + 0.4,
+        });
+      }
+
+      let cursor = 0;
+      for (const group of built) {
+        const width = new THREE.Box3().setFromObject(group).max.x * 2;
+        group.position.x = cursor;
+        logoRoot.add(group);
+        cursor += width + gap;
+      }
+
+      const total = cursor - gap;
+      logoRoot.position.x = -total / 2;
+      logoRoot.scale.setScalar(1.02);
     });
+
+    const particles = new THREE.BufferGeometry();
+    const count = 170;
+    const positions = new Float32Array(count * 3);
+    for (let i = 0; i < count; i++) {
+      positions[i * 3] = (Math.random() - 0.5) * 12;
+      positions[i * 3 + 1] = (Math.random() - 0.5) * 5;
+      positions[i * 3 + 2] = (Math.random() - 0.5) * 4;
+    }
+    particles.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+    const particleMat = new THREE.PointsMaterial({
+      color: 0xff244c,
+      size: 0.018,
+      transparent: true,
+      opacity: 0.52,
+      depthWrite: false,
+    });
+    const particleField = new THREE.Points(particles, particleMat);
+    scene.add(particleField);
 
     const resize = () => {
       const width = mount.clientWidth || window.innerWidth;
-      const height = mount.clientHeight || window.innerHeight;
+      const height = mount.clientHeight || 360;
       renderer.setSize(width, height, false);
       camera.aspect = width / height;
       camera.updateProjectionMatrix();
     };
-
     const observer = new ResizeObserver(resize);
     observer.observe(mount);
     resize();
@@ -182,76 +176,70 @@ export const HelzerX3DLogo: React.FC<{ phase: Phase }> = ({ phase }) => {
     const animate = () => {
       if (disposed) return;
 
-      const elapsed = clock.getElapsedTime();
+      const dt = Math.min(clock.getDelta(), 0.05);
+      const elapsed = clock.elapsedTime;
       const current = phaseRef.current;
 
-      const revealProgress = current === 'boot'
-        ? 0
-        : current === 'logo'
-          ? THREE.MathUtils.clamp((elapsed - 0.2) / 2.55, 0, 1)
-          : 1;
+      const progress =
+        current === 'boot' ? 0 :
+        current === 'logo' ? Math.min(Math.max((elapsed - 0.25) / 1.65, 0), 1) :
+        current === 'settle' ? 1 :
+        current === 'reveal' || current === 'ready' ? 1 : 0;
 
-      const intro = THREE.MathUtils.smootherstep(revealProgress, 0, 1);
-      const cinematic = THREE.MathUtils.smoothstep(intro, 0, 1);
+      const eased = THREE.MathUtils.smoothstep(progress, 0, 1);
 
-      if (current === 'boot') {
-        logo.scale.setScalar(0.62);
-        logo.position.y = 0.08;
-        logo.rotation.y = 0.16;
-        logo.rotation.x = 0.035;
-      } else if (current === 'logo' || current === 'settle') {
-        const breathe = Math.sin(elapsed * 0.9) * 0.012;
-        logo.scale.setScalar(THREE.MathUtils.lerp(0.62, 1.0, cinematic) + breathe);
-        logo.position.y = THREE.MathUtils.lerp(0.08, 0, cinematic);
-        logo.rotation.y = THREE.MathUtils.lerp(0.16, 0, cinematic);
-        logo.rotation.x = THREE.MathUtils.lerp(0.035, 0, cinematic);
-      } else {
-        const exit = THREE.MathUtils.smoothstep(
-          THREE.MathUtils.clamp((elapsed - 3.0) / 1.05, 0, 1), 0, 1
+      letters.forEach((letter, index) => {
+        const parent = letter.front.parent;
+        const local = THREE.MathUtils.smoothstep(
+          Math.min(Math.max((eased * 1.35) - letter.delay, 0), 1),
+          0,
+          1
         );
-        logo.position.y = THREE.MathUtils.lerp(0, 1.25, exit);
-        logo.scale.setScalar(THREE.MathUtils.lerp(1, 0.72, exit));
-        logo.rotation.y = THREE.MathUtils.lerp(0, -0.035, exit);
+
+        if (local === 0) {
+          parent.visible = true;
+          parent.position.x = Math.sin(letter.seed) * 2.8;
+          parent.position.y = 1.8 + Math.cos(letter.seed) * 1.4;
+          parent.position.z = -2.8 - index * 0.22;
+          parent.rotation.x = 1.4 + Math.sin(letter.seed) * 0.5;
+          parent.rotation.y = -2.1 + Math.cos(letter.seed) * 0.65;
+          parent.rotation.z = Math.sin(letter.seed) * 0.9;
+          parent.scale.setScalar(0.08);
+        } else {
+          parent.position.y = THREE.MathUtils.lerp(parent.position.y, 0, 0.15);
+          parent.position.z = THREE.MathUtils.lerp(parent.position.z, 0, 0.15);
+          parent.rotation.x = THREE.MathUtils.lerp(parent.rotation.x, 0, 0.13);
+          parent.rotation.y = THREE.MathUtils.lerp(parent.rotation.y, 0, 0.13);
+          parent.rotation.z = THREE.MathUtils.lerp(parent.rotation.z, 0, 0.13);
+          parent.scale.setScalar(THREE.MathUtils.lerp(parent.scale.x, 1, 0.15));
+        }
+      });
+
+      if (current === 'settle' || current === 'reveal' || current === 'ready') {
+        logoRoot.position.y = THREE.MathUtils.lerp(logoRoot.position.y, 0.35, 0.055);
+        logoRoot.scale.setScalar(THREE.MathUtils.lerp(logoRoot.scale.x, 0.88, 0.055));
+      } else {
+        logoRoot.position.y = THREE.MathUtils.lerp(logoRoot.position.y, 0, 0.06);
       }
 
-      const exitOpacity = current === 'reveal' || current === 'ready'
-        ? THREE.MathUtils.clamp(1 - (elapsed - 3.0) / 0.9, 0, 1)
-        : 1;
-      frontMaterial.opacity = exitOpacity;
-      edgeMaterial.opacity = exitOpacity;
-
-      camera.position.z = THREE.MathUtils.lerp(10.8, 9.15, cinematic);
-      camera.position.x = Math.sin(elapsed * 0.18) * 0.045;
-
-      const glowStrength = cinematic * 0.24 * exitOpacity;
-      (glow.material as THREE.MeshBasicMaterial).opacity = glowStrength;
-      (ring.material as THREE.MeshBasicMaterial).opacity = cinematic * 0.16 * exitOpacity;
-      particleMaterial.opacity = cinematic * 0.34 * exitOpacity;
-
-      ring.rotation.z += 0.0018;
-      particleField.rotation.y += 0.0008;
-      rim.intensity = 15 + Math.sin(elapsed * 1.35) * 2.5;
+      particleField.rotation.y += dt * 0.025;
+      particleField.rotation.x = Math.sin(elapsed * 0.18) * 0.04;
+      redLight.intensity = 11 + Math.sin(elapsed * 2.2) * 2;
 
       renderer.render(scene, camera);
-      frame = requestAnimationFrame(animate);
+      requestAnimationFrame(animate);
     };
 
     animate();
 
     return () => {
       disposed = true;
-      cancelAnimationFrame(frame);
       observer.disconnect();
       renderer.dispose();
-      geometry?.dispose();
-      frontMaterial.dispose();
-      edgeMaterial.dispose();
-      glow.geometry.dispose();
-      (glow.material as THREE.Material).dispose();
-      ring.geometry.dispose();
-      (ring.material as THREE.Material).dispose();
+      frontMat.dispose();
+      redMat.dispose();
       particles.dispose();
-      particleMaterial.dispose();
+      particleMat.dispose();
       renderer.domElement.remove();
     };
   }, []);
