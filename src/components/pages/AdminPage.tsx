@@ -345,194 +345,56 @@ export const AdminPage: React.FC = () => {
       {activeAdminTab === 'nodes' && (
         <div className="space-y-8 animate-in fade-in duration-300">
           
-          {/* Header */}
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-slate-200">
-            <div>
-              <h2 className="text-2xl font-black text-slate-900 font-display">
-                Global Cloud Clusters &amp; Datacenter Nodes
-              </h2>
-              <p className="text-xs sm:text-sm text-slate-500 mt-1">
-                Real-time telemetry, memory utilization, and container orchestration across 6 core datacenters.
-              </p>
-            </div>
-
-            <div className="flex items-center gap-2">
-              <button
-                type="button"
-                onClick={() => {
-                  showNotification();
-                }}
-                className="flex items-center gap-2 px-4 py-2 rounded-xl bg-cyan-500 text-white font-bold text-xs hover:bg-cyan-400 transition cursor-pointer"
-              >
-                <RefreshCw className="w-4 h-4" />
-                <span>Sync Node Telemetry</span>
-              </button>
-            </div>
-          </div>
-
-          {/* Grid of 6 Cloud Clusters */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {nodeClusters.map((cluster) => (
-              <div
-                key={cluster.id}
-                className="bg-white/90 border border-slate-200 rounded-3xl p-6 space-y-5 hover:border-cyan-500/30 transition shadow-xl"
-              >
-                {/* Node Title & Status */}
-                <div className="flex items-center justify-between pb-4 border-b border-slate-200">
-                  <div className="flex items-center gap-3">
-                    <span className="text-2xl">{cluster.flag}</span>
-                    <div>
-                      <h4 className="font-display font-extrabold text-slate-900 text-base">
-                        {cluster.name}
-                      </h4>
-                      <p className="text-xs text-slate-500">{cluster.location}</p>
-                    </div>
-                  </div>
-
-                  <span
-                    className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider ${
-                      cluster.maintenance
-                        ? 'bg-amber-500/10 text-amber-400 border border-amber-500/30'
-                        : 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/30'
-                    }`}
-                  >
-                    <span
-                      className={`h-1.5 w-1.5 rounded-full ${
-                        cluster.maintenance ? 'bg-amber-400' : 'bg-emerald-400 animate-pulse'
-                      }`}
-                    />
-                    <span>{cluster.maintenance ? 'Maintenance' : 'Armed'}</span>
-                  </span>
+          {/* SECTION: INFRASTRUCTURE CONFIGURATION */}
+      {activeAdminTab === 'nodes' && (
+        <div className="space-y-6 animate-in fade-in duration-300">
+          <div className="rounded-3xl border border-slate-200 bg-white/90 p-6 shadow-[0_20px_60px_rgba(15,23,42,0.06)] sm:p-8">
+            <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+              <div>
+                <div className="mb-2 inline-flex items-center gap-2 rounded-full border border-blue-200 bg-blue-50 px-3 py-1 text-[10px] font-bold uppercase tracking-[0.16em] text-blue-700">
+                  <Server className="h-3.5 w-3.5" /> Infrastructure configuration
                 </div>
-
-                {/* Processor info */}
-                <div className="p-3 rounded-2xl bg-slate-50 border border-slate-100">
-                  <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider block mb-1">
-                    CPU Architecture
-                  </span>
-                  <p className="text-xs font-bold text-cyan-300 font-mono truncate">
-                    {cluster.cpu}
-                  </p>
-                </div>
-
-                {/* Gauges: CPU & RAM */}
-                <div className="space-y-3">
-                  <div>
-                    <div className="flex justify-between text-xs font-semibold mb-1">
-                      <span className="text-slate-500">CPU Compute Load</span>
-                      <span className="text-slate-900 font-mono">{cluster.load}%</span>
-                    </div>
-                    <div className="h-1.5 rounded-full bg-slate-800 overflow-hidden">
-                      <div
-                        className="h-full bg-cyan-400 rounded-full transition-all duration-500"
-                        style={{ width: `${cluster.load}%` }}
-                      />
-                    </div>
-                  </div>
-
-                  <div>
-                    <div className="flex justify-between text-xs font-semibold mb-1">
-                      <span className="text-slate-500">RAM Allocated</span>
-                      <span className="text-slate-900 font-mono">{cluster.ram}</span>
-                    </div>
-                    <div className="h-1.5 rounded-full bg-slate-800 overflow-hidden">
-                      <div
-                        className="h-full bg-blue-500 rounded-full"
-                        style={{ width: '45%' }}
-                      />
-                    </div>
-                  </div>
-                </div>
-
-                {/* Telemetry Footer */}
-                <div className="pt-3 border-t border-slate-100 grid grid-cols-3 gap-2 text-center text-[10px]">
-                  <div>
-                    <span className="text-slate-500 block">Ping</span>
-                    <span className="font-mono font-bold text-emerald-400">{cluster.latency}</span>
-                  </div>
-                  <div>
-                    <span className="text-slate-500 block">SLA</span>
-                    <span className="font-mono font-bold text-slate-900">{cluster.uptime}</span>
-                  </div>
-                  <div>
-                    <span className="text-slate-500 block">NVMe Gen5</span>
-                    <span className="font-mono font-bold text-cyan-300">RAID-10</span>
-                  </div>
-                </div>
-
-                {/* Node Controls */}
-                <div className="grid grid-cols-2 gap-2 pt-2">
-                  <button
-                    type="button"
-                    onClick={() => {
-                      showNotification();
-                    }}
-                    className="py-2 px-3 rounded-xl bg-slate-50 hover:bg-slate-100 text-slate-600 text-xs font-bold transition flex items-center justify-center gap-1.5"
-                  >
-                    <Zap className="w-3.5 h-3.5 text-cyan-400" />
-                    <span>Flush Cache</span>
-                  </button>
-
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setNodeClusters((prev) =>
-                        prev.map((c) =>
-                          c.id === cluster.id ? { ...c, maintenance: !c.maintenance } : c
-                        )
-                      );
-                      showNotification();
-                    }}
-                    className={`py-2 px-3 rounded-xl text-xs font-bold transition flex items-center justify-center gap-1.5 ${
-                      cluster.maintenance
-                        ? 'bg-emerald-600 hover:bg-emerald-500 text-slate-900'
-                        : 'bg-amber-500/20 hover:bg-amber-500/30 text-amber-300'
-                    }`}
-                  >
-                    <span>{cluster.maintenance ? 'Bring Online' : 'Maintenance'}</span>
-                  </button>
-                </div>
+                <h2 className="text-2xl font-black tracking-tight text-slate-900">Server Nodes</h2>
+                <p className="mt-1 max-w-2xl text-sm leading-6 text-slate-500">Only configured node records are shown. Live CPU, RAM, disk and network telemetry is not fabricated.</p>
               </div>
-            ))}
+              <div className="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-right">
+                <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400">Configured</p>
+                <p className="text-2xl font-black text-slate-900">{serverNodes.length}</p>
+              </div>
+            </div>
           </div>
-
+          {serverNodes.length === 0 ? (
+            <div className="rounded-3xl border border-dashed border-slate-300 bg-white p-12 text-center">
+              <Server className="mx-auto h-10 w-10 text-slate-300" />
+              <h3 className="mt-4 text-lg font-bold text-slate-900">No server nodes configured</h3>
+              <p className="mx-auto mt-2 max-w-md text-sm text-slate-500">Connect the infrastructure backend before showing operational telemetry.</p>
+            </div>
+          ) : (
+            <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
+              {serverNodes.map((node) => (
+                <div key={node.id} className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm transition hover:-translate-y-1 hover:shadow-xl">
+                  <div className="flex items-start justify-between gap-3">
+                    <div className="min-w-0">
+                      <h3 className="truncate font-bold text-slate-900">{node.name}</h3>
+                      <p className="mt-1 truncate text-xs text-slate-500">{node.fqdn}</p>
+                    </div>
+                    <span className={`shrink-0 rounded-full px-2.5 py-1 text-[10px] font-bold uppercase ${node.status === 'connected' ? 'bg-emerald-50 text-emerald-700' : node.status === 'offline' ? 'bg-red-50 text-red-700' : 'bg-amber-50 text-amber-700'}`}>{node.status}</span>
+                  </div>
+                  <div className="mt-5 grid grid-cols-2 gap-3 text-xs">
+                    <div className="rounded-2xl bg-slate-50 p-3"><span className="text-slate-400">Location</span><p className="mt-1 font-semibold text-slate-700">{node.location}</p></div>
+                    <div className="rounded-2xl bg-slate-50 p-3"><span className="text-slate-400">Endpoint</span><p className="mt-1 font-semibold text-slate-700">{node.scheme}:{node.port}</p></div>
+                    <div className="rounded-2xl bg-slate-50 p-3"><span className="text-slate-400">CPU cores</span><p className="mt-1 font-semibold text-slate-700">{node.cpuCores}</p></div>
+                    <div className="rounded-2xl bg-slate-50 p-3"><span className="text-slate-400">Containers</span><p className="mt-1 font-semibold text-slate-700">{node.activeContainers}</p></div>
+                  </div>
+                  <div className="mt-4 border-t border-slate-100 pt-4 text-[11px] text-slate-400">Configuration data only — connect a live infrastructure API to expose telemetry.</div>
+                </div>
+              ))}
+            </div>
+          )}
         </div>
       )}
-      {activeAdminTab === 'plans' && (
-        <div className="space-y-8">
-          <div className="flex items-center justify-between">
-            <div>
-              <h3 className="text-lg font-bold text-slate-900">Hosting Plans Management</h3>
-              <p className="text-xs text-slate-500">
-                Add, edit, remove, and customize all hosting plans and pricing.
-              </p>
-            </div>
-            <button
-              onClick={() => {
-                setIsAddingPlan(true);
-                setEditingPlan({
-                  id: 'plan-' + Date.now(),
-                  gameId: 'minecraft',
-                  name: 'New Node Plan',
-                  subtitle: 'Optimized Server',
-                  monthlyPrice: 14.99,
-                  ram: '8 GB DDR5',
-                  cpu: '3 vCPU Ryzen 9 9950X',
-                  storage: '80 GB NVMe Gen5',
-                  players: '60 Slots',
-                  tier: 'Standard',
-                  popular: false,
-                  features: ['Instant 15s Setup', 'Corero 3.2Tbps DDoS Protection', 'Automated Backups'],
-                });
-              }}
-              className="bg-cyan-500 hover:bg-cyan-400 text-white text-xs font-bold px-4 py-2.5 rounded-xl transition-all flex items-center gap-1.5 shadow-md shadow-cyan-500/20"
-            >
-              <Plus className="w-4 h-4" />
-              <span>Create New Plan</span>
-            </button>
-          </div>
 
-          {/* Plan Edit Modal/Drawer */}
+      {/* Plan Edit Modal/Drawer */}
           {editingPlan && (
             <form
               onSubmit={handleSavePlan}
