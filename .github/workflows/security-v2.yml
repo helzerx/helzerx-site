@@ -1,4 +1,4 @@
-name: ArveX Security V2
+name: HelzerX Security
 
 on:
   push:
@@ -18,5 +18,4 @@ jobs:
       - run: npm install
       - run: npm run lint
       - run: npm run build
-      - run: node --check server.js
-      - run: node --check auth-security-v2.js
+      - run: node --check automation/index.mjs
