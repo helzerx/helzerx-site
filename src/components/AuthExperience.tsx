@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { ArrowLeft, ShieldCheck, Sparkles, Zap } from 'lucide-react';
 import { useApp } from '../context/AppContext';
 import { AuthModal } from './AuthModal';
+import { CinematicDelivery3D } from './CinematicDelivery3D';
 
 type AuthMode = 'login' | 'register';
 type Phase = 'boot' | 'walk' | 'place' | 'open' | 'ready';
@@ -60,54 +61,7 @@ export const AuthExperience: React.FC<{ mode: AuthMode }> = ({ mode }) => {
           </div>
         </div>
 
-        <div className="helzerx-delivery-scene" aria-hidden="true">
-          <div className="helzerx-floor-shadow" />
-          <div className="helzerx-floor-light" />
-
-          <div className="helzerx-box-stage">
-            <div className="helzerx-box-glow" />
-            <div className="helzerx-box">
-              <div className="helzerx-box-inside" />
-              <div className="helzerx-box-front" />
-              <div className="helzerx-box-side" />
-              <div className="helzerx-box-lid">
-                <div className="helzerx-box-lid-mark">H</div>
-              </div>
-            </div>
-          </div>
-
-          <div className="helzerx-boy">
-            <div className="helzerx-boy-shadow" />
-            <div className="helzerx-boy-head">
-              <div className="helzerx-boy-hair" />
-              <div className="helzerx-boy-ear" />
-              <div className="helzerx-boy-face-light" />
-            </div>
-            <div className="helzerx-boy-neck" />
-            <div className="helzerx-boy-torso">
-              <div className="helzerx-boy-jacket-highlight" />
-            </div>
-            <div className="helzerx-boy-arm helzerx-boy-arm-back" />
-            <div className="helzerx-boy-arm helzerx-boy-arm-front">
-              <div className="helzerx-boy-hand" />
-            </div>
-            <div className="helzerx-boy-leg helzerx-boy-leg-back">
-              <div className="helzerx-boy-shoe" />
-            </div>
-            <div className="helzerx-boy-leg helzerx-boy-leg-front">
-              <div className="helzerx-boy-shoe" />
-            </div>
-          </div>
-
-          <div className="helzerx-scene-caption">
-            <span className="helzerx-caption-dot" />
-            {phase === 'walk' && 'DELIVERY IN PROGRESS'}
-            {phase === 'place' && 'SECURE PACKAGE PLACED'}
-            {phase === 'open' && 'AUTH TERMINAL DEPLOYING'}
-            {phase === 'ready' && 'AUTH TERMINAL READY'}
-            {phase === 'boot' && 'INITIALIZING'}
-          </div>
-        </div>
+        <CinematicDelivery3D phase={phase} />
 
         <div className="helzerx-auth-copy">
           <div className="helzerx-auth-kicker">
