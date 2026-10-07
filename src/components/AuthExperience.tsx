@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import { ArrowLeft, ShieldCheck, Sparkles, Zap } from 'lucide-react';
+import { ArrowLeft } from 'lucide-react';
 import { useApp } from '../context/AppContext';
 import { AuthModal } from './AuthModal';
-import { CinematicDelivery3D } from './CinematicDelivery3D';
+import { HelzerX3DLogo } from './HelzerX3DLogo';
 
 type AuthMode = 'login' | 'register';
-type Phase = 'boot' | 'walk' | 'place' | 'open' | 'ready';
+type Phase = 'boot' | 'logo' | 'settle' | 'reveal' | 'ready';
 
 export const AuthExperience: React.FC<{ mode: AuthMode }> = ({ mode }) => {
   const { isAuthModalOpen, setAuthModalTab, setIsAuthModalOpen } = useApp();
@@ -14,15 +14,16 @@ export const AuthExperience: React.FC<{ mode: AuthMode }> = ({ mode }) => {
   useEffect(() => {
     setAuthModalTab(mode);
     setIsAuthModalOpen(false);
+    setPhase('boot');
 
     const timers = [
-      window.setTimeout(() => setPhase('walk'), 260),
-      window.setTimeout(() => setPhase('place'), 1700),
-      window.setTimeout(() => setPhase('open'), 2350),
+      window.setTimeout(() => setPhase('logo'), 180),
+      window.setTimeout(() => setPhase('settle'), 2100),
+      window.setTimeout(() => setPhase('reveal'), 2450),
       window.setTimeout(() => {
         setPhase('ready');
         setIsAuthModalOpen(true);
-      }, 3050),
+      }, 3250),
     ];
 
     return () => timers.forEach(window.clearTimeout);
@@ -35,55 +36,27 @@ export const AuthExperience: React.FC<{ mode: AuthMode }> = ({ mode }) => {
 
   const goHome = () => window.location.assign('/');
 
-  const title = mode === 'login' ? 'WELCOME BACK' : 'CREATE YOUR ID';
-  const subtitle = mode === 'login'
-    ? 'Securely entering your HelzerX environment'
-    : 'Preparing your secure HelzerX account';
-
   return (
-    <main className="helzerx-auth-stage">
+    <main className="helzerx-auth-stage helzerx-auth-stage-logo">
       <div className="helzerx-auth-noise" />
       <div className="helzerx-auth-grid" />
-      <div className="helzerx-auth-orbit helzerx-auth-orbit-a" />
-      <div className="helzerx-auth-orbit helzerx-auth-orbit-b" />
 
       <button type="button" onClick={goHome} className="helzerx-auth-back">
         <ArrowLeft className="h-4 w-4" />
         <span>Back to HelzerX</span>
       </button>
 
-      <div className={`helzerx-auth-content phase-${phase}`}>
-        <div className="helzerx-auth-brand">
-          <div className="helzerx-auth-brand-mark">H</div>
-          <div>
-            <div className="helzerx-auth-brand-name">HELZERX</div>
-            <div className="helzerx-auth-brand-sub">CLOUD SYSTEM</div>
-          </div>
-        </div>
-
-        <CinematicDelivery3D phase={phase} />
-
-        <div className="helzerx-auth-copy">
-          <div className="helzerx-auth-kicker">
-            <ShieldCheck className="h-3.5 w-3.5" />
-            SECURE AUTHENTICATION
-          </div>
-          <h1>{title}</h1>
-          <p>{subtitle}</p>
-          <div className="helzerx-auth-pills">
-            <span><Zap /> Low-latency access</span>
-            <span><Sparkles /> Cloud protected</span>
-          </div>
-        </div>
+      <div className={`helzerx-auth-content helzerx-logo-auth-content phase-${phase}`}>
+        <HelzerX3DLogo phase={phase} />
       </div>
 
-      <div className="helzerx-auth-footer">
-        <span>HELZERX CLOUD</span>
-        <span className="helzerx-footer-line" />
-        <span>SECURE // FAST // YOURS</span>
+      <div className="helzerx-logo-auth-caption">
+        <span className="helzerx-logo-auth-line" />
+        <span>{mode === 'login' ? 'SECURE ACCESS' : 'CREATE YOUR ACCOUNT'}</span>
+        <span className="helzerx-logo-auth-line" />
       </div>
 
-      <div className={`helzerx-modal-reveal phase-${phase}`}>
+      <div className={`helzerx-modal-reveal helzerx-logo-modal phase-${phase}`}>
         <AuthModal />
       </div>
     </main>
