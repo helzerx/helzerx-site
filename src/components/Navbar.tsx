@@ -48,7 +48,7 @@ export const Navbar: React.FC = () => {
   };
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-slate-200/80 bg-white/85 text-slate-800 shadow-[0_8px_30px_rgba(15,23,42,0.06)] backdrop-blur-xl">
+    <header className="sticky top-0 z-50 w-full bg-transparent px-3 pt-3 text-slate-800 sm:px-5 sm:pt-5">
       {/* Top Announcement Bar */}
       {isAnnouncementVisible && siteSettings.announcementActive && (
         <div className="w-full border-b border-slate-200 bg-slate-50/90 py-1.5 px-4 text-xs text-slate-500 flex items-center justify-between">
@@ -69,7 +69,7 @@ export const Navbar: React.FC = () => {
       )}
 
       {/* Main Navbar matching Gabrun Top Bar */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-18 flex items-center justify-between">
+      <div className="mx-auto flex h-[66px] max-w-[1160px] items-center justify-between rounded-[22px] border border-white/90 bg-white/90 px-4 shadow-[0_10px_35px_rgba(35,25,75,0.07)] backdrop-blur-xl sm:px-6">
         
         {/* Brand Zone */}
         <div className="flex items-center gap-8">
