@@ -64,13 +64,13 @@ export const HeroSection: React.FC = () => {
   };
 
   return (
-    <section className="relative isolate min-h-[760px] overflow-hidden bg-[#fcfcff] text-slate-950 sm:min-h-[900px]">
+    <section className="relative isolate min-h-[760px] overflow-hidden bg-[#fdfdff] text-slate-950 sm:min-h-[900px]">
       {/* Reference-inspired soft SaaS atmosphere */}
       <div aria-hidden="true" className="pointer-events-none absolute inset-0 -z-10 overflow-hidden">
-        <div className="absolute left-1/2 top-[280px] h-[620px] w-[1000px] -translate-x-1/2 rounded-full bg-violet-200/55 blur-[110px]" />
+        <div className="absolute left-1/2 top-[330px] h-[620px] w-[1000px] -translate-x-1/2 rounded-full bg-violet-200/55 blur-[110px]" />
         <div className="absolute left-[-170px] top-[500px] h-[520px] w-[520px] rounded-full bg-purple-300/45 blur-[100px]" />
         <div className="absolute right-[-180px] top-[480px] h-[540px] w-[540px] rounded-full bg-blue-200/55 blur-[105px]" />
-        <div className="absolute inset-x-0 bottom-0 h-[480px] bg-gradient-to-b from-transparent via-violet-100/55 to-violet-200/80" />
+        <div className="absolute inset-x-0 bottom-0 h-[520px] bg-gradient-to-b from-transparent via-violet-100/55 to-violet-200/80" />
         <div
           className="absolute inset-x-0 top-[130px] h-[520px] opacity-[0.22]"
           style={{
@@ -92,9 +92,9 @@ export const HeroSection: React.FC = () => {
         </div>
 
         {/* Main reference-style headline */}
-        <div className="mx-auto mt-5 max-w-5xl text-center">
-          <h1 className="font-display text-[43px] font-medium leading-[0.98] tracking-[-0.055em] text-slate-950 sm:text-6xl md:text-7xl lg:text-[78px]">
-            {siteSettings.heroTitleLine1 || 'Power your cloud'}
+        <div className="mx-auto mt-6 max-w-[1080px] text-center">
+          <h1 className="font-display text-[44px] font-medium leading-[1.02] tracking-[-0.055em] text-slate-950 sm:text-6xl md:text-7xl lg:text-[74px]">
+            {siteSettings.heroTitleLine1 || 'Enhance your cloud experience'}
             <br />
             {siteSettings.heroTitleLine2 || 'with'}{' '}
             <span className="relative inline-block">
@@ -107,14 +107,14 @@ export const HeroSection: React.FC = () => {
             </span>
           </h1>
 
-          <p className="mx-auto mt-6 max-w-[690px] text-sm leading-6 text-slate-500 sm:text-base sm:leading-7">
+          <p className="mx-auto mt-5 max-w-[650px] text-sm leading-6 text-slate-500 sm:text-base sm:leading-7">
             {siteSettings.heroSubtitle ||
               'Simplify your cloud infrastructure with fast game servers, VPS hosting and scalable compute — built for developers, creators and growing communities.'}
           </p>
 
           <form
             onSubmit={handleGetStarted}
-            className="mx-auto mt-7 flex max-w-[500px] items-center rounded-full border border-slate-200/90 bg-white/90 p-1.5 shadow-[0_14px_45px_rgba(30,27,75,0.10)] backdrop-blur-xl focus-within:border-violet-300 focus-within:shadow-[0_18px_50px_rgba(124,58,237,0.14)]"
+            className="mx-auto mt-6 hidden max-w-[500px] items-center rounded-full border border-slate-200/90 bg-white/90 p-1.5 shadow-[0_14px_45px_rgba(30,27,75,0.10)] backdrop-blur-xl focus-within:border-violet-300 focus-within:shadow-[0_18px_50px_rgba(124,58,237,0.14)]"
           >
             <input
               type="text"
@@ -132,7 +132,7 @@ export const HeroSection: React.FC = () => {
             </button>
           </form>
 
-          <div className="mt-5 flex flex-wrap justify-center gap-x-6 gap-y-2 text-[10px] font-semibold text-slate-400 sm:text-[11px]">
+          <div className="hidden mt-5 flex flex-wrap justify-center gap-x-6 gap-y-2 text-[10px] font-semibold text-slate-400 sm:text-[11px]">
             <span className="inline-flex items-center gap-1.5">
               <CheckCircle2 className="h-3.5 w-3.5 text-emerald-500" />
               Fast deployment
@@ -149,7 +149,7 @@ export const HeroSection: React.FC = () => {
         </div>
 
         {/* Phone + floating cards, following the reference composition */}
-        <div className="relative mx-auto mt-10 h-[430px] max-w-6xl sm:mt-14 sm:h-[570px]">
+        <div className="relative mx-auto mt-8 h-[520px] max-w-[1080px] sm:mt-10 sm:h-[650px]">
           {/* soft light behind the product */}
           <div className="absolute left-1/2 top-[160px] h-[360px] w-[560px] -translate-x-1/2 rounded-full bg-violet-400/35 blur-[95px] sm:top-[220px] sm:h-[430px] sm:w-[720px]" />
 
@@ -157,7 +157,7 @@ export const HeroSection: React.FC = () => {
           <ThreeDCard
             maxTilt={5}
             glare={true}
-            className="absolute left-[1%] top-[120px] z-20 hidden w-[245px] rounded-[22px] border border-white/90 bg-white/95 p-4 shadow-[0_25px_70px_rgba(38,28,80,0.16)] backdrop-blur-xl sm:block lg:left-[5%] lg:top-[170px]"
+            className="absolute left-[0%] top-[150px] z-20 hidden w-[285px] rounded-[22px] border border-white/90 bg-white/95 p-4 shadow-[0_25px_70px_rgba(38,28,80,0.16)] backdrop-blur-xl sm:block lg:left-[3%] lg:top-[185px]"
           >
             <div className="flex items-center gap-2.5">
               <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-violet-100 text-violet-600">
@@ -194,7 +194,7 @@ export const HeroSection: React.FC = () => {
           <ThreeDCard
             maxTilt={5}
             glare={true}
-            className="absolute right-[1%] top-[95px] z-20 hidden w-[250px] rounded-[22px] border border-white/90 bg-white/95 p-4 shadow-[0_25px_70px_rgba(38,28,80,0.16)] backdrop-blur-xl sm:block lg:right-[5%] lg:top-[145px]"
+            className="absolute right-[0%] top-[125px] z-20 hidden w-[285px] rounded-[22px] border border-white/90 bg-white/95 p-4 shadow-[0_25px_70px_rgba(38,28,80,0.16)] backdrop-blur-xl sm:block lg:right-[3%] lg:top-[160px]"
           >
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2.5">
@@ -242,7 +242,7 @@ export const HeroSection: React.FC = () => {
           </ThreeDCard>
 
           {/* Center phone */}
-          <div className="absolute left-1/2 top-[40px] z-10 w-[260px] -translate-x-1/2 sm:top-[55px] sm:w-[350px]">
+          <div className="absolute left-1/2 top-[20px] z-10 w-[300px] -translate-x-1/2 sm:top-[35px] sm:w-[400px]">
             <div className="absolute inset-x-[-45px] top-[90px] h-[370px] rounded-[50%] bg-white/60 blur-3xl" />
 
             <div className="relative rounded-[42px] border-[7px] border-slate-950 bg-slate-950 p-1.5 shadow-[0_35px_90px_rgba(37,24,75,0.30)] sm:rounded-[50px] sm:border-[8px]">
@@ -339,7 +339,7 @@ export const HeroSection: React.FC = () => {
           <ThreeDCard
             maxTilt={4}
             glare={true}
-            className="absolute bottom-[18px] left-1/2 z-30 hidden w-[430px] -translate-x-1/2 rounded-[22px] border border-white/90 bg-white/95 p-3.5 shadow-[0_25px_70px_rgba(38,28,80,0.18)] backdrop-blur-xl sm:block"
+            className="absolute bottom-[22px] left-1/2 z-30 hidden w-[470px] -translate-x-1/2 rounded-[22px] border border-white/90 bg-white/95 p-3.5 shadow-[0_25px_70px_rgba(38,28,80,0.18)] backdrop-blur-xl sm:block"
           >
             <div className="flex items-center justify-between gap-4">
               <div className="flex min-w-0 items-center gap-3">
