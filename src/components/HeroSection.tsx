@@ -1,280 +1,167 @@
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import {
-  ArrowRight,
-  ShieldCheck,
-  Zap,
-  Server,
-  Play,
-  CheckCircle2,
-  Cpu,
-  Layers,
-  Sparkles,
-  Wifi,
-  CreditCard,
-  Lock,
-  Globe2,
+  ArrowRight, CheckCircle2, Cpu, Database, Globe2, HardDrive, MapPin, Play,
+  Server, ShieldCheck, Sparkles, Zap,
 } from 'lucide-react';
 import { useApp } from '../context/AppContext';
 import { ThreeDCard } from './ThreeDCard';
-import { ThreeDServerVisualizer } from './ThreeDServerVisualizer';
 
 export const HeroSection: React.FC = () => {
-  const { navigateTo, setIsAuthModalOpen, setAuthModalTab } = useApp();
+  const { navigateTo, setIsAuthModalOpen, setAuthModalTab, plans, locations, deployedServers, formatPrice, siteSettings } = useApp();
   const [emailInput, setEmailInput] = useState('');
+
+  const activePlans = useMemo(() => (plans || []).filter((plan) => plan.status !== 'inactive'), [plans]);
+  const featuredPlan = activePlans.find((plan) => plan.featured || plan.popular) || activePlans[0] || null;
+  const onlineLocations = useMemo(() => (locations || []).filter((location) => location.status !== 'maintenance'), [locations]);
+  const runningServers = useMemo(() => (deployedServers || []).filter((server) => server.status === 'running'), [deployedServers]);
 
   const handleGetStarted = (e: React.FormEvent) => {
     e.preventDefault();
     if (emailInput.trim()) {
       setAuthModalTab('register');
       setIsAuthModalOpen(true);
-    } else {
-      navigateTo('plans');
+      return;
     }
+    navigateTo('plans');
   };
 
   return (
-    <section className="relative isolate overflow-hidden gabrun-hero-gradient pt-8 pb-20 sm:pt-14 sm:pb-32 text-white">
-      {/* 3D Background Decorative Rings & Ambient Glows */}
+    <section className="relative isolate overflow-hidden bg-white text-slate-900">
       <div aria-hidden="true" className="pointer-events-none absolute inset-0 -z-10 overflow-hidden">
-        <div className="gabrun-grid-lines absolute inset-0 opacity-40" />
-        <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[850px] h-[850px] rounded-full bg-blue-400/25 blur-[140px] animate-pulse-glow" />
-        <div className="absolute top-1/2 left-8 w-[420px] h-[420px] rounded-full bg-cyan-300/20 blur-[110px]" />
-        <div className="absolute bottom-10 right-8 w-[450px] h-[450px] rounded-full bg-indigo-500/25 blur-[120px]" />
+        <div className="absolute left-1/2 top-[-260px] h-[620px] w-[900px] -translate-x-1/2 rounded-full bg-blue-100/60 blur-3xl" />
+        <div className="absolute left-[-140px] top-[42%] h-[460px] w-[460px] rounded-full bg-violet-200/55 blur-3xl" />
+        <div className="absolute right-[-160px] top-[48%] h-[500px] w-[500px] rounded-full bg-blue-200/55 blur-3xl" />
+        <div className="absolute inset-x-0 bottom-0 h-[360px] bg-gradient-to-b from-transparent via-violet-100/35 to-violet-200/65" />
+        <div className="absolute inset-0 opacity-[0.28]" style={{
+          backgroundImage: 'linear-gradient(rgba(37,99,235,0.08) 1px, transparent 1px), linear-gradient(90deg, rgba(37,99,235,0.08) 1px, transparent 1px)',
+          backgroundSize: '48px 48px',
+          maskImage: 'linear-gradient(to bottom, black 0%, transparent 68%)',
+        }} />
       </div>
 
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        {/* Top Header 3D Pill Badge */}
-        <div className="text-center mb-6">
-          <div className="inline-flex items-center gap-2 rounded-full border border-white/35 bg-white/15 px-4 py-1.5 text-xs font-semibold text-white shadow-[0_8px_20px_rgba(0,0,0,0.12)] backdrop-blur-md transition-transform hover:scale-105 cursor-default">
-            <span className="flex h-2 w-2 rounded-full bg-cyan-300 animate-ping" />
-            <span className="flex h-1.5 w-1.5 rounded-full bg-cyan-300" />
-            <span className="tracking-wide">HelzerX Cloud Deployment Faster</span>
+      <div className="mx-auto max-w-7xl px-4 pb-16 pt-10 sm:px-6 sm:pb-24 sm:pt-14 lg:px-8">
+        <div className="mb-7 flex justify-center">
+          <div className="inline-flex items-center gap-2 rounded-full border border-violet-200 bg-violet-50/80 px-4 py-1.5 text-xs font-semibold text-violet-700 shadow-sm backdrop-blur">
+            <Sparkles className="h-3.5 w-3.5" />
+            <span>{siteSettings.heroBadgeText || 'Cloud hosting built for performance'}</span>
           </div>
         </div>
 
-        {/* Main Hero Headline */}
-        <div className="mx-auto max-w-4xl text-center">
-          <h1 className="font-display text-4xl font-extrabold tracking-tight text-white sm:text-6xl lg:text-[70px] leading-[1.08] drop-shadow-sm">
-            Make Your Cloud Hosting Fast
+        <div className="mx-auto max-w-5xl text-center">
+          <h1 className="font-display text-4xl font-semibold leading-[1.03] tracking-[-0.045em] text-slate-950 sm:text-6xl lg:text-[76px]">
+            {siteSettings.heroTitleLine1 || 'Power your projects'}
             <br />
-            and Secure, with{' '}
-            <span className="inline-flex items-center align-middle gap-2.5 px-3.5 py-1.5 mx-1 rounded-2xl bg-white/20 border border-white/35 backdrop-blur-md shadow-2xl text-white transform hover:scale-105 transition-transform">
-              <span className="flex h-8 w-8 sm:h-9 sm:w-9 items-center justify-center rounded-xl bg-white text-blue-600 shadow-md">
-                <Server className="h-5 w-5" />
+            {siteSettings.heroTitleLine2 || 'with'}{' '}
+            <span className="relative inline-flex align-middle">
+              <span className="absolute inset-0 rounded-2xl bg-violet-200/70 blur-xl" />
+              <span className="relative inline-flex items-center gap-2 rounded-2xl border border-violet-200 bg-gradient-to-br from-violet-500 to-indigo-600 px-4 py-2 text-white shadow-[0_16px_45px_rgba(99,102,241,0.25)] sm:px-6 sm:py-2.5">
+                <span className="flex h-8 w-8 items-center justify-center rounded-xl bg-white/95 text-indigo-600 shadow-sm sm:h-10 sm:w-10">
+                  <Server className="h-4 w-4 sm:h-5 sm:w-5" />
+                </span>
+                <span className="font-display font-bold tracking-[-0.04em]">{siteSettings.brandName || 'HelzerX'}</span>
               </span>
-              <span className="font-display font-black tracking-tight">HelzerX</span>
             </span>
           </h1>
 
-          <p className="mx-auto mt-6 max-w-2xl text-base sm:text-lg text-blue-100 font-normal leading-relaxed">
-            High-performance game and cloud server hosting built for developers and gamers who demand
-            blazing speed, 99.99% uptime, zero lag, and instant automated provisioning.
+          <p className="mx-auto mt-6 max-w-2xl text-sm font-medium leading-7 text-slate-500 sm:text-base">
+            {siteSettings.heroSubtitle || 'Fast, reliable game hosting, cloud VPS and dedicated infrastructure for developers, creators and gaming communities.'}
           </p>
 
-          {/* Interactive Search / Email Pill Input */}
-          <form
-            onSubmit={handleGetStarted}
-            className="mx-auto mt-9 flex max-w-md items-center rounded-full bg-white/20 p-1.5 backdrop-blur-xl border border-white/35 shadow-[0_20px_50px_rgba(0,0,0,0.2)] transition-all focus-within:border-white focus-within:bg-white/25 focus-within:scale-[1.02]"
-          >
+          <form onSubmit={handleGetStarted} className="mx-auto mt-8 flex max-w-[520px] items-center rounded-full border border-slate-200 bg-white/90 p-1.5 shadow-[0_16px_45px_rgba(15,23,42,0.10)] backdrop-blur-xl transition-all focus-within:border-violet-300 focus-within:shadow-[0_20px_55px_rgba(99,102,241,0.16)]">
             <input
               type="text"
               value={emailInput}
               onChange={(e) => setEmailInput(e.target.value)}
               placeholder="Your email or server domain..."
-              className="w-full bg-transparent px-5 py-2.5 text-sm text-white placeholder-blue-100/70 outline-none font-medium"
+              className="min-w-0 flex-1 bg-transparent px-5 py-3 text-sm font-medium text-slate-800 outline-none placeholder:text-slate-400"
             />
-            <button
-              type="submit"
-              className="btn-3d flex items-center gap-2 rounded-full bg-[#0b0f19] px-6 py-3 text-xs font-bold text-white transition hover:bg-slate-900 active:scale-95 shrink-0"
-            >
-              <Play className="h-3 w-3 fill-white" />
-              <span>Get Started</span>
+            <button type="submit" className="flex shrink-0 items-center gap-2 rounded-full bg-slate-950 px-5 py-3 text-xs font-bold text-white shadow-lg transition hover:-translate-y-0.5 hover:bg-slate-800 active:translate-y-0">
+              <Play className="h-3 w-3 fill-current" />
+              {siteSettings.heroCtaText || 'Get Started'}
             </button>
           </form>
 
-          {/* Quick trust checkmarks */}
-          <div className="mt-6 flex items-center justify-center gap-6 text-xs text-blue-100 font-medium">
-            <span className="inline-flex items-center gap-1.5">
-              <CheckCircle2 className="h-4 w-4 text-cyan-300" /> Instant 60s Setup
-            </span>
-            <span className="inline-flex items-center gap-1.5">
-              <CheckCircle2 className="h-4 w-4 text-cyan-300" /> Corero 3.2Tbps DDoS Defense
-            </span>
-            <span className="hidden sm:inline-flex items-center gap-1.5">
-              <CheckCircle2 className="h-4 w-4 text-cyan-300" /> 24/7 Expert Support
-            </span>
+          <div className="mt-5 flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-[11px] font-semibold text-slate-500">
+            <span className="inline-flex items-center gap-1.5"><CheckCircle2 className="h-3.5 w-3.5 text-emerald-500" />{activePlans.length > 0 ? '${activePlans.length hosting plans' : 'Flexible hosting plans'}</span>
+            <span className="inline-flex items-center gap-1.5"><Globe2 className="h-3.5 w-3.5 text-blue-500" />{onlineLocations.length > 0 ? '${onlineLocations.length configured locations' : 'Multiple hosting locations'}</span>
+            <span className="inline-flex items-center gap-1.5"><ShieldCheck className="h-3.5 w-3.5 text-violet-500" />Secure client area</span>
           </div>
         </div>
 
-        {/* ---------------------------------------------------- */}
-        {/* Trio of 3D Floating Glass Cards (Signature Gabrun Look) */}
-        {/* ---------------------------------------------------- */}
-        <div className="mt-16 relative mx-auto max-w-5xl stage-3d">
-          <div className="grid grid-cols-1 md:grid-cols-12 gap-6 items-center">
-            
-            {/* Left Card: 3D Floating Plan Spec Showcase */}
-            <div className="md:col-span-4">
-              <ThreeDCard maxTilt={10} glare={true} className="rounded-3xl bg-white p-6 text-slate-800 border border-white/95 card-3d-left animate-float-left shadow-xl">
-                <div style={{ transform: 'translateZ(15px)' }}>
-                  <div className="flex items-center justify-between mb-4">
-                    <span className="inline-flex items-center gap-1.5 rounded-full bg-blue-50 px-3 py-1 text-[11px] font-bold text-blue-600 shadow-sm">
-                      <span className="h-2 w-2 rounded-full bg-blue-600 animate-pulse" />
-                      +10k Active
-                    </span>
-                    <span className="text-xs font-bold text-slate-400 font-mono">Node #01</span>
-                  </div>
-
-                  <p className="text-[11px] font-bold uppercase tracking-wider text-slate-400">Your Purpose Plan</p>
-                  <div className="flex items-baseline justify-between mt-1 mb-4">
-                    <h3 className="font-display text-xl font-black text-slate-900">Developer Node</h3>
-                    <div className="text-right">
-                      <span className="font-display text-3xl font-black text-slate-900">$99</span>
-                      <span className="text-xs font-medium text-slate-400">/mo</span>
-                    </div>
-                  </div>
-
-                  <div className="space-y-2.5 border-t border-slate-100 pt-3 text-xs text-slate-600 font-medium">
-                    <div className="flex items-center justify-between">
-                      <span className="flex items-center gap-2">
-                        <Cpu className="h-4 w-4 text-blue-600" /> 8 vCPU Ryzen 9
-                      </span>
-                      <span className="font-bold text-slate-900">Dedicated</span>
-                    </div>
-                    <div className="flex items-center justify-between">
-                      <span className="flex items-center gap-2">
-                        <Layers className="h-4 w-4 text-blue-600" /> 16GB DDR5 RAM
-                      </span>
-                      <span className="font-bold text-slate-900">ECC Clustered</span>
-                    </div>
-                    <div className="flex items-center justify-between">
-                      <span className="flex items-center gap-2">
-                        <ShieldCheck className="h-4 w-4 text-emerald-600" /> Corero Scrubbing
-                      </span>
-                      <span className="font-bold text-emerald-600">3.2 Tbps</span>
-                    </div>
-                  </div>
-
-                  <button
-                    type="button"
-                    onClick={() => navigateTo('plans')}
-                    className="mt-5 w-full rounded-2xl bg-blue-50 py-2.5 text-xs font-bold text-blue-700 hover:bg-blue-100 transition shadow-sm"
-                  >
-                    Choose This Plan
-                  </button>
+        <div className="relative mx-auto mt-14 max-w-6xl sm:mt-20">
+          <div className="grid items-center gap-5 lg:grid-cols-[0.82fr_1.35fr_0.82fr]">
+            <ThreeDCard maxTilt={7} glare={true} className="order-2 rounded-[26px] border border-white bg-white p-5 text-slate-800 shadow-[0_25px_65px_rgba(15,23,42,0.14)] lg:order-1">
+              <div>
+                <div className="mb-4 flex items-center justify-between">
+                  <span className="rounded-full bg-violet-50 px-3 py-1 text-[10px] font-bold text-violet-700">{featuredPlan?.badge || featuredPlan?.tier || 'Hosting Plan'}</span>
+                  <span className="text-[10px] font-bold text-slate-400">PLAN</span>
                 </div>
-              </ThreeDCard>
-            </div>
-
-            {/* Center Hero Card: 3D Elevated Server Provisioning / Payment */}
-            <div className="md:col-span-5 z-20">
-              <ThreeDCard maxTilt={12} scale={1.03} glare={true} className="rounded-3xl bg-white p-7 text-slate-800 border-2 border-white/95 card-3d-center animate-float-center shadow-2xl">
-                <div style={{ transform: 'translateZ(25px)' }}>
-                  <div className="flex items-center justify-between mb-4">
-                    <div className="flex items-center gap-2.5">
-                      <div className="h-8 w-8 rounded-xl bg-blue-600 text-white flex items-center justify-center font-black text-xs shadow-md shadow-blue-500/30">
-                        HX
-                      </div>
-                      <div>
-                        <span className="text-[10px] font-bold text-slate-400 block leading-tight">Instant Provision</span>
-                        <span className="text-xs font-extrabold text-slate-900">Dallas High-Speed Node</span>
-                      </div>
-                    </div>
-                    <span className="inline-flex items-center gap-1 rounded-full bg-emerald-50 px-2.5 py-1 text-[10px] font-bold text-emerald-700 shadow-sm">
-                      <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse" />
-                      Live 9ms
-                    </span>
-                  </div>
-
-                  {/* Glowing Value Box */}
-                  <div className="my-5 rounded-2xl bg-gradient-to-br from-slate-50 via-blue-50/40 to-slate-50 p-4 border border-blue-100/80 shadow-inner">
-                    <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Real-time Performance</span>
-                    <div className="flex items-baseline gap-2 mt-1">
-                      <span className="font-display text-3xl font-black text-slate-900">$3,050.00</span>
-                      <span className="text-xs font-bold text-blue-600">USD Value / 99.99%</span>
-                    </div>
-
-                    <div className="mt-3 flex items-center gap-2">
-                      <div className="h-6 w-9 rounded-md bg-blue-600/10 border border-blue-200 flex items-center justify-center shadow-xs">
-                        <CreditCard className="h-3.5 w-3.5 text-blue-600" />
-                      </div>
-                      <div className="h-6 w-9 rounded-md bg-amber-500/10 border border-amber-200 flex items-center justify-center text-[10px] font-bold text-amber-700">
-                        PP
-                      </div>
-                      <div className="h-6 w-9 rounded-md bg-emerald-500/10 border border-emerald-200 flex items-center justify-center text-[9px] font-bold text-emerald-700">
-                        LKR
-                      </div>
-                      <Wifi className="h-4 w-4 ml-auto text-slate-400 rotate-90 animate-pulse" />
-                    </div>
-                  </div>
-
-                  <div className="flex items-center justify-between text-xs text-slate-500 mb-5 px-1 font-medium">
-                    <span>Active Core Boost</span>
-                    <span className="font-black text-slate-900 font-mono text-xs">5.7 GHz Boost</span>
-                  </div>
-
-                  <button
-                    type="button"
-                    onClick={() => navigateTo('checkout')}
-                    className="btn-3d w-full rounded-2xl bg-[#0b0f19] py-3.5 text-xs font-extrabold text-white hover:bg-slate-900 transition flex items-center justify-center gap-2"
-                  >
-                    <span>Deploy Server Now</span>
-                    <ArrowRight className="h-3.5 w-3.5" />
-                  </button>
+                <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-slate-400">Featured hosting</p>
+                <div className="mt-1 flex items-end justify-between gap-3">
+                  <h2 className="font-display text-xl font-bold tracking-tight text-slate-950">{featuredPlan?.name || 'Choose a plan'}</h2>
+                  {featuredPlan && <div className="shrink-0 text-right"><span className="font-display text-2xl font-bold text-slate-950">{formatPrice(featuredPlan.monthlyPrice)}</span><span className="text-[10px] text-slate-400">/mo</span></div>}
                 </div>
-              </ThreeDCard>
-            </div>
+                <div className="mt-4 space-y-2.5 border-t border-slate-100 pt-4 text-[11px] font-medium text-slate-600">
+                  <div className="flex items-center justify-between gap-3"><span className="flex items-center gap-2"><Cpu className="h-3.5 w-3.5 text-violet-600" />CPU</span><span className="text-right font-bold text-slate-900">{featuredPlan?.cpu || 'Configured per plan'}</span></div>
+                  <div className="flex items-center justify-between gap-3"><span className="flex items-center gap-2"><Database className="h-3.5 w-3.5 text-blue-600" />Memory</span><span className="font-bold text-slate-900">{featuredPlan?.ram || 'Included'}</span></div>
+                  <div className="flex items-center justify-between gap-3"><span className="flex items-center gap-2"><HardDrive className="h-3.5 w-3.5 text-cyan-600" />Storage</span><span className="font-bold text-slate-900">{featuredPlan?.storage || 'Included'}</span></div>
+                </div>
+                <button type="button" onClick={() => navigateTo('plans')} className="mt-5 flex w-full items-center justify-center gap-2 rounded-2xl bg-violet-50 py-3 text-xs font-bold text-violet-700 transition hover:bg-violet-100">
+                  View hosting plans <ArrowRight className="h-3.5 w-3.5" />
+                </button>
+              </div>
+            </ThreeDCard>
 
-            {/* Right Card: 3D Floating User Console Status Card */}
-            <div className="md:col-span-3">
-              <ThreeDCard maxTilt={10} glare={true} className="rounded-3xl bg-white p-6 text-slate-800 border border-white/95 card-3d-right animate-float-right shadow-xl">
-                <div style={{ transform: 'translateZ(15px)' }}>
-                  <div className="flex items-center gap-2.5 mb-4">
-                    <img
-                      src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=100&q=80"
-                      alt="John Clayton"
-                      referrerPolicy="no-referrer"
-                      className="h-10 w-10 rounded-full object-cover border border-slate-200 shadow-sm"
-                    />
-                    <div className="min-w-0">
-                      <span className="text-[10px] font-bold text-slate-400 block leading-tight">Welcome back</span>
-                      <span className="text-xs font-extrabold text-slate-900 truncate block">John Clayton</span>
-                    </div>
+            <ThreeDCard maxTilt={9} scale={1.02} glare={true} className="order-1 z-20 rounded-[30px] border border-white/90 bg-white p-4 shadow-[0_35px_90px_rgba(15,23,42,0.18)] sm:p-5 lg:order-2">
+              <div className="overflow-hidden rounded-[22px] border border-slate-200/80 bg-slate-50">
+                <div className="flex items-center justify-between border-b border-slate-200 bg-white px-4 py-3">
+                  <div className="flex items-center gap-2.5">
+                    <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-violet-500 to-indigo-600 text-xs font-black text-white shadow-md shadow-violet-500/20">HX</div>
+                    <div><span className="block text-[9px] font-bold uppercase tracking-[0.16em] text-slate-400">HelzerX Control</span><span className="block text-xs font-bold text-slate-900">Hosting overview</span></div>
                   </div>
+                  <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-50 px-2.5 py-1 text-[9px] font-bold text-emerald-700"><span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />{runningServers.length > 0 ? 'Servers running' : 'Ready to deploy'}</span>
+                </div>
 
-                  <div className="rounded-xl bg-slate-50 p-3 mb-3 border border-slate-100">
-                    <span className="text-[10px] text-slate-400 font-bold uppercase tracking-wider block">Monthly Hosting</span>
-                    <span className="font-display text-lg font-black text-slate-900 mt-0.5 block">$3,050.00 <span className="text-[10px] text-slate-400 font-normal">USD</span></span>
+                <div className="grid gap-3 p-3 sm:grid-cols-[1.35fr_0.65fr]">
+                  <div className="rounded-2xl bg-gradient-to-br from-white via-violet-50/70 to-blue-50 p-4">
+                    <div className="flex items-center justify-between"><span className="text-[9px] font-bold uppercase tracking-[0.15em] text-slate-400">{runningServers.length > 0 ? 'Active servers' : 'Your infrastructure'}</span><Server className="h-4 w-4 text-violet-600" /></div>
+                    <div className="mt-2 flex items-end gap-2"><span className="font-display text-4xl font-bold tracking-tight text-slate-950">{runningServers.length}</span><span className="pb-1 text-[10px] font-semibold text-slate-400">running</span></div>
+                    <div className="mt-4 h-2 overflow-hidden rounded-full bg-white/80"><div className="h-full rounded-full bg-gradient-to-r from-violet-500 to-blue-500" style={{ width: runningServers.length > 0 ? '68%' : '8%' }} /></div>
+                    <p className="mt-2 text-[9px] font-medium text-slate-400">Live count from your configured hosting data</p>
                   </div>
-
-                  <div className="grid grid-cols-2 gap-2 text-[10px]">
-                    <div className="rounded-lg bg-emerald-50 p-2 border border-emerald-100">
-                      <span className="text-emerald-700 font-bold block">CPU Load</span>
-                      <span className="font-black text-slate-900 text-xs">14.2%</span>
-                    </div>
-                    <div className="rounded-lg bg-blue-50 p-2 border border-blue-100">
-                      <span className="text-blue-700 font-bold block">RAM Usage</span>
-                      <span className="font-black text-slate-900 text-xs">4.2 GB</span>
-                    </div>
-                  </div>
-
-                  <div className="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between text-[11px] text-slate-500 font-medium">
-                    <span>Node Status</span>
-                    <span className="text-emerald-600 font-bold flex items-center gap-1">
-                      <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse" /> Running
-                    </span>
+                  <div className="grid grid-cols-2 gap-3 sm:grid-cols-1">
+                    <div className="rounded-2xl bg-white p-3 shadow-sm ring-1 ring-slate-200/80"><MapPin className="h-4 w-4 text-blue-600" /><span className="mt-2 block text-[9px] font-bold uppercase tracking-wider text-slate-400">Locations</span><span className="font-display text-xl font-bold text-slate-950">{onlineLocations.length}</span></div>
+                    <div className="rounded-2xl bg-white p-3 shadow-sm ring-1 ring-slate-200/80"><Zap className="h-4 w-4 text-amber-500" /><span className="mt-2 block text-[9px] font-bold uppercase tracking-wider text-slate-400">Plans</span><span className="font-display text-xl font-bold text-slate-950">{activePlans.length}</span></div>
                   </div>
                 </div>
-              </ThreeDCard>
-            </div>
 
+                <div className="flex flex-col gap-3 border-t border-slate-200 bg-white px-4 py-3 sm:flex-row sm:items-center sm:justify-between">
+                  <div className="flex flex-wrap items-center gap-2 text-[9px] font-semibold text-slate-500"><span className="inline-flex items-center gap-1.5"><span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />Client area</span><span>•</span><span>{siteSettings.brandName || 'HelzerX'}</span></div>
+                  <button type="button" onClick={() => navigateTo('plans')} className="inline-flex items-center justify-center gap-2 rounded-xl bg-slate-950 px-4 py-2.5 text-[10px] font-bold text-white transition hover:bg-slate-800">Deploy a server <ArrowRight className="h-3 w-3" /></button>
+                </div>
+              </div>
+            </ThreeDCard>
+
+            <ThreeDCard maxTilt={7} glare={true} className="order-3 rounded-[26px] border border-white bg-white p-5 text-slate-800 shadow-[0_25px_65px_rgba(15,23,42,0.14)]">
+              <div>
+                <div className="mb-4 flex items-center justify-between"><span className="inline-flex items-center gap-1.5 rounded-full bg-blue-50 px-3 py-1 text-[10px] font-bold text-blue-700"><Globe2 className="h-3 w-3" />Infrastructure</span><span className="text-[10px] font-bold text-slate-400">CONFIGURED</span></div>
+                <h3 className="font-display text-lg font-bold tracking-tight text-slate-950">Hosting locations</h3>
+                <p className="mt-1 text-[10px] font-medium leading-5 text-slate-400">Select a location when you deploy your next server.</p>
+                <div className="mt-4 space-y-2">
+                  {onlineLocations.slice(0, 3).map((location) => (
+                    <button key={location.id} type="button" onClick={() => navigateTo('locations')} className="flex w-full items-center justify-between rounded-xl border border-slate-100 bg-slate-50/80 px-3 py-2.5 text-left transition hover:border-blue-200 hover:bg-blue-50">
+                      <span className="flex min-w-0 items-center gap-2"><span className="text-sm">{location.flag}</span><span className="truncate text-[10px] font-bold text-slate-800">{location.city}</span></span>
+                      <span className="shrink-0 text-[9px] font-bold text-emerald-600">{location.pingMs} ms</span>
+                    </button>
+                  ))}
+                  {onlineLocations.length === 0 && <div className="rounded-xl border border-dashed border-slate-200 bg-slate-50 px-3 py-4 text-center text-[10px] font-medium text-slate-400">Locations will appear here when configured.</div>}
+                </div>
+                <button type="button" onClick={() => navigateTo('locations')} className="mt-4 flex w-full items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white py-2.5 text-[10px] font-bold text-slate-700 transition hover:border-blue-300 hover:text-blue-700">Explore locations <ArrowRight className="h-3 w-3" /></button>
+              </div>
+            </ThreeDCard>
           </div>
+          <div className="pointer-events-none absolute -bottom-20 left-1/2 -z-10 h-52 w-[82%] -translate-x-1/2 rounded-full bg-violet-400/30 blur-[70px]" />
         </div>
-
-        {/* Interactive 3D Server Node Cluster Visualizer */}
-        <div className="mt-14">
-          <ThreeDServerVisualizer />
-        </div>
-
       </div>
     </section>
   );
