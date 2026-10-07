@@ -6,7 +6,7 @@ Wants=network-online.target
 [Service]
 Type=simple
 User=root
-WorkingDirectory=/var/www/helzerx
+WorkingDirectory=/var/www/arvex
 EnvironmentFile=/var/www/helzerx/.env
 EnvironmentFile=-/var/www/helzerx/.env.automation
 ExecStart=/usr/bin/node /var/www/helzerx/automation/index.mjs
