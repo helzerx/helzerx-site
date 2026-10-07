@@ -1,10 +1,10 @@
-# HelzerX PayHere deployment
+# ArveX PayHere deployment
 
-The repository now contains a separate server-side PayHere service so the PayHere Merchant Secret never reaches the Vite bundle.
+The repository contains a server-side PayHere automation service so the PayHere Merchant Secret never reaches the Vite bundle.
 
-## 1. Environment
+## Environment
 
-Add these values to `/var/www/helzerx/.env`:
+Add these values to the server environment:
 
 ```env
 PAYHERE_MERCHANT_ID=YOUR_MERCHANT_ID
@@ -17,52 +17,12 @@ PAYHERE_USD_TO_LKR=300
 
 Keep `PAYHERE_MERCHANT_SECRET` server-only.
 
-## 2. Install the service
+The active public origin must be supplied through `PUBLIC_ORIGIN`; do not hard-code a domain in the deployment scripts.
+
+## Health checks
 
 ```bash
-cd /var/www/arvex
-git pull origin main
-cp deploy/helzerx-automation.service /etc/systemd/system/arvex-payments.service
-systemctl daemon-reload
-systemctl enable --now arvex-payments
-systemctl status arvex-payments --no-pager
+curl -fsS http://127.0.0.1:5001/api/payments/payhere/status?orderId=TEST
 ```
 
-## 3. Nginx
-
-Inside the existing HTTPS `server {}` block for `helzerx.cyou`, add the location from `deploy/nginx-payhere-location.conf` **before** the generic `/api/` location.
-
-Then:
-
-```bash
-nginx -t && systemctl reload nginx
-```
-
-## 4. Health checks
-
-```bash
-curl -fsS http://127.0.0.1:5001/api/payments/health
-curl -fsS https://arvex.host/api/payments/health
-```
-
-The response should report `ok: true`. `payhereConfigured` becomes `true` after the Merchant ID and Merchant Secret are configured.
-
-## 5. PayHere domain
-
-In PayHere Integrations, add/approve `arvex.host` and use the Merchant Secret generated for that domain. PayHere requires the merchant secret to remain server-side and requires the payment notification signature to be verified before treating a payment as successful.
-
-## 6. Production switch
-
-After a successful sandbox payment test, set:
-
-```env
-PAYHERE_SANDBOX=false
-```
-
-Then restart only the payment service:
-
-```bash
-systemctl restart arvex-payments
-```
-
-Do not mark an order paid from the browser return URL. The implementation only changes the order to `paid` after a verified PayHere server notification with a matching merchant ID, order ID, currency, amount and `md5sig`.
+A real order should only become paid after a verified PayHere server notification. The browser return URL is never treated as proof of payment.
