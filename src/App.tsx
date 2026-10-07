@@ -125,7 +125,7 @@ function MainWebsite() {
 }
 
 export default function App(){
-  const path=window.location.pathname.toLowerCase().replace(/\\/+$/, '') || '/';
+  const path=window.location.pathname.toLowerCase() || '/';
   if(path==='/login') return <AppProvider><AuthExperience mode="login" /></AppProvider>;
   if(path==='/signup' || path==='/register') return <AppProvider><AuthExperience mode="register" /></AppProvider>;
   return <AppProvider><MainWebsite/></AppProvider>;
