@@ -188,3 +188,20 @@
     animation: none !important;
   }
 }
+
+
+/* Dedicated authentication pages: never inherit or reveal the public-site canvas. */
+html:has(.helzerx-auth-stage),
+body:has(.helzerx-auth-stage),
+#root:has(.helzerx-auth-stage) {
+  background: #05070b !important;
+}
+
+body:has(.helzerx-auth-stage) {
+  overflow: hidden !important;
+}
+
+#root:has(.helzerx-auth-stage) {
+  min-height: 100vh;
+  isolation: isolate;
+}
