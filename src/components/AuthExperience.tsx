@@ -10,6 +10,11 @@ export const AuthExperience: React.FC<{ mode: AuthMode }> = ({ mode }) => {
   const [phase, setPhase] = useState<'boot' | 'jump' | 'ready'>('boot');
 
   useEffect(() => {
+    const previousOverflow = document.body.style.overflow;
+    const previousBackground = document.body.style.background;
+    document.body.style.overflow = 'hidden';
+    document.body.style.background = '#05070b';
+
     setAuthModalTab(mode);
     setIsAuthModalOpen(false);
 
@@ -22,6 +27,8 @@ export const AuthExperience: React.FC<{ mode: AuthMode }> = ({ mode }) => {
     return () => {
       window.clearTimeout(jumpTimer);
       window.clearTimeout(readyTimer);
+      document.body.style.overflow = previousOverflow;
+      document.body.style.background = previousBackground;
     };
   }, [mode, setAuthModalTab, setIsAuthModalOpen]);
 
@@ -35,7 +42,11 @@ export const AuthExperience: React.FC<{ mode: AuthMode }> = ({ mode }) => {
     : 'Preparing your secure HelzerX account';
 
   return (
-    <main className="helzerx-auth-stage">
+    <main
+      className="helzerx-auth-stage fixed inset-0 z-[9999] min-h-screen w-screen overflow-hidden bg-[#05070b] text-white"
+      style={{ isolation: 'isolate' }}
+    >
+      <div className="pointer-events-none absolute inset-0 z-0 bg-[#05070b]" />
       <div className="helzerx-auth-noise" />
       <div className="helzerx-auth-grid" />
       <div className="helzerx-auth-orbit helzerx-auth-orbit-a" />
