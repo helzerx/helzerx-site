@@ -17,13 +17,13 @@ export const AuthExperience: React.FC<{ mode: AuthMode }> = ({ mode }) => {
     setPhase('boot');
 
     const timers = [
-      window.setTimeout(() => setPhase('logo'), 180),
-      window.setTimeout(() => setPhase('settle'), 2100),
-      window.setTimeout(() => setPhase('reveal'), 2450),
+      window.setTimeout(() => setPhase('logo'), 120),
+      window.setTimeout(() => setPhase('settle'), 3150),
+      window.setTimeout(() => setPhase('reveal'), 3600),
       window.setTimeout(() => {
         setPhase('ready');
         setIsAuthModalOpen(true);
-      }, 3250),
+      }, 4700),
     ];
 
     return () => timers.forEach(window.clearTimeout);
@@ -38,6 +38,7 @@ export const AuthExperience: React.FC<{ mode: AuthMode }> = ({ mode }) => {
 
   return (
     <main className="helzerx-auth-stage helzerx-auth-stage-logo">
+      <div className="helzerx-auth-atmosphere" />
       <div className="helzerx-auth-noise" />
       <div className="helzerx-auth-grid" />
 
@@ -50,9 +51,9 @@ export const AuthExperience: React.FC<{ mode: AuthMode }> = ({ mode }) => {
         <HelzerX3DLogo phase={phase} />
       </div>
 
-      <div className="helzerx-logo-auth-caption">
+      <div className={`helzerx-logo-auth-caption phase-${phase}`}>
         <span className="helzerx-logo-auth-line" />
-        <span>{mode === 'login' ? 'SECURE ACCESS' : 'CREATE YOUR ACCOUNT'}</span>
+        <span>{mode === 'login' ? 'WELCOME BACK' : 'JOIN HELZERX'}</span>
         <span className="helzerx-logo-auth-line" />
       </div>
 
