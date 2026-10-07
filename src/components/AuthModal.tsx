@@ -156,7 +156,7 @@ const AuthModalContent: React.FC = () => {
     window.location.assign(destination);
   };
 
-  const close = () => {
+  const close = (destination?: string) => {
     if (busy) return;
     setIsAuthModalOpen(false);
     setErrorMsg('');
@@ -166,7 +166,7 @@ const AuthModalContent: React.FC = () => {
     // Dedicated authentication pages must never fall back to a blank auth shell.
     // After a successful/closed auth flow, return to the public site.
     if (isDedicatedAuthPage) {
-      window.location.assign('/');
+      window.location.assign(destination || '/');
     }
   };
 
@@ -338,7 +338,7 @@ const AuthModalContent: React.FC = () => {
         } else {
           serverUserLogin(data);
           setSuccessMsg('Account verified & saved to database. Welcome to HelzerX Cloud!');
-          setTimeout(close, 500);
+          setTimeout(() => close('/#/client-dashboard'), 500);
         }
       } catch (err: any) {
         setFailedAttempts((prev) => prev + 1);
@@ -408,7 +408,7 @@ const AuthModalContent: React.FC = () => {
 
         serverUserLogin(data);
         setSuccessMsg('Identity verified. Loading cloud environment...');
-        setTimeout(close, 500);
+        setTimeout(() => close('/#/client-dashboard'), 500);
       } catch (err: any) {
         setFailedAttempts((prev) => prev + 1);
         setErrorMsg(err.message || 'Failed to authenticate.');
@@ -489,7 +489,7 @@ const AuthModalContent: React.FC = () => {
       } else {
         login(email.trim().toLowerCase(), 'customer', fullName);
         setSuccessMsg('Account created & saved in database! Signing in...');
-        setTimeout(close, 500);
+        setTimeout(() => close('/#/client-dashboard'), 500);
       }
     } catch (err: any) {
       setErrorMsg(err.message || 'Registration error occurred.');
