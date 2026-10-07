@@ -1,126 +1,56 @@
-import React, { useEffect, useState } from 'react';
-import { ArrowLeft, Gamepad2, ShieldCheck, Sparkles, Zap } from 'lucide-react';
+import React, { useEffect } from 'react';
 import { useApp } from '../context/AppContext';
 import { AuthModal } from './AuthModal';
 
 type AuthMode = 'login' | 'register';
 
+/**
+ * Dedicated authentication route.
+ *
+ * This is intentionally NOT rendered as a modal over MainWebsite.
+ * App.tsx routes /login and /signup directly here, and this component
+ * mounts only the authentication surface.
+ */
 export const AuthExperience: React.FC<{ mode: AuthMode }> = ({ mode }) => {
   const { setAuthModalTab, setIsAuthModalOpen } = useApp();
-  const [phase, setPhase] = useState<'boot' | 'jump' | 'ready'>('boot');
 
   useEffect(() => {
     const previousOverflow = document.body.style.overflow;
     const previousBackground = document.body.style.background;
+    const previousColor = document.body.style.color;
+
+    document.documentElement.style.background = '#05070b';
     document.body.style.overflow = 'hidden';
     document.body.style.background = '#05070b';
+    document.body.style.color = '#fff';
 
     setAuthModalTab(mode);
-    setIsAuthModalOpen(false);
-
-    const jumpTimer = window.setTimeout(() => setPhase('jump'), 420);
-    const readyTimer = window.setTimeout(() => {
-      setPhase('ready');
-      setIsAuthModalOpen(true);
-    }, 1050);
+    // Open immediately. There is no cinematic layer or public-site layer
+    // underneath the auth surface.
+    setIsAuthModalOpen(true);
 
     return () => {
-      window.clearTimeout(jumpTimer);
-      window.clearTimeout(readyTimer);
       document.body.style.overflow = previousOverflow;
       document.body.style.background = previousBackground;
+      document.body.style.color = previousColor;
+      document.documentElement.style.background = '';
     };
   }, [mode, setAuthModalTab, setIsAuthModalOpen]);
 
-  const goHome = () => {
-    window.location.assign('/');
-  };
-
-  const title = mode === 'login' ? 'WELCOME BACK' : 'CREATE YOUR ID';
-  const subtitle = mode === 'login'
-    ? 'Booting your secure HelzerX environment'
-    : 'Preparing your secure HelzerX account';
-
   return (
     <main
-      className="helzerx-auth-stage fixed inset-0 z-[9999] min-h-screen w-screen overflow-hidden bg-[#05070b] text-white"
-      style={{ isolation: 'isolate' }}
+      aria-label={mode === 'login' ? 'HelzerX Login' : 'HelzerX Sign Up'}
+      className="fixed inset-0 z-[2147483647] min-h-screen w-screen overflow-hidden bg-[#05070b]"
+      style={{
+        position: 'fixed',
+        inset: 0,
+        width: '100vw',
+        height: '100vh',
+        minHeight: '100dvh',
+        background: '#05070b',
+        isolation: 'isolate',
+      }}
     >
-      <div className="pointer-events-none absolute inset-0 z-0 bg-[#05070b]" />
-      <div className="helzerx-auth-noise" />
-      <div className="helzerx-auth-grid" />
-      <div className="helzerx-auth-orbit helzerx-auth-orbit-a" />
-      <div className="helzerx-auth-orbit helzerx-auth-orbit-b" />
-
-      <button type="button" onClick={goHome} className="helzerx-auth-back">
-        <ArrowLeft className="h-4 w-4" />
-        <span>Back to HelzerX</span>
-      </button>
-
-      <div className={`helzerx-auth-content phase-${phase}`}>
-        <div className="helzerx-auth-brand">
-          <div className="helzerx-auth-brand-mark">H</div>
-          <div>
-            <div className="helzerx-auth-brand-name">HELZERX</div>
-            <div className="helzerx-auth-brand-sub">CLOUD SYSTEM</div>
-          </div>
-        </div>
-
-        <div className="helzerx-console-wrap">
-          <div className="helzerx-console-glow" />
-
-          <div className="helzerx-console-shadow" />
-
-          <div className="helzerx-console">
-            <div className="helzerx-console-top">
-              <div className="helzerx-console-leds">
-                <i /><i /><i />
-              </div>
-              <span>HX-01</span>
-              <Gamepad2 className="h-4 w-4" />
-            </div>
-
-            <div className="helzerx-console-screen">
-              <div className="helzerx-screen-scan" />
-              <div className="helzerx-screen-logo">H</div>
-              <div className="helzerx-screen-title">{title}</div>
-              <div className="helzerx-screen-sub">{subtitle}</div>
-
-              <div className="helzerx-screen-status">
-                <span className="helzerx-status-dot" />
-                <span>{phase === 'ready' ? 'AUTH TERMINAL READY' : 'INITIALIZING...'}</span>
-              </div>
-            </div>
-
-            <div className="helzerx-console-front">
-              <div className="helzerx-console-slot" />
-              <div className="helzerx-console-controls">
-                <span /><span /><span />
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div className="helzerx-auth-copy">
-          <div className="helzerx-auth-kicker">
-            <ShieldCheck className="h-3.5 w-3.5" />
-            SECURE AUTHENTICATION
-          </div>
-          <h1>{title}</h1>
-          <p>{subtitle}</p>
-          <div className="helzerx-auth-pills">
-            <span><Zap /> Low-latency access</span>
-            <span><Sparkles /> Cloud protected</span>
-          </div>
-        </div>
-      </div>
-
-      <div className="helzerx-auth-footer">
-        <span>HELZERX CLOUD</span>
-        <span className="helzerx-footer-line" />
-        <span>SECURE // FAST // YOURS</span>
-      </div>
-
       <AuthModal />
     </main>
   );
