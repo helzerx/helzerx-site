@@ -1,28 +1,30 @@
 import React, { useEffect, useState } from 'react';
-import { ArrowLeft, Gamepad2, ShieldCheck, Sparkles, Zap } from 'lucide-react';
+import { ArrowLeft, ShieldCheck, Sparkles, Zap } from 'lucide-react';
 import { useApp } from '../context/AppContext';
 import { AuthModal } from './AuthModal';
 
 type AuthMode = 'login' | 'register';
+type Phase = 'boot' | 'walk' | 'place' | 'open' | 'ready';
 
 export const AuthExperience: React.FC<{ mode: AuthMode }> = ({ mode }) => {
   const { isAuthModalOpen, setAuthModalTab, setIsAuthModalOpen } = useApp();
-  const [phase, setPhase] = useState<'boot' | 'jump' | 'ready'>('boot');
+  const [phase, setPhase] = useState<Phase>('boot');
 
   useEffect(() => {
     setAuthModalTab(mode);
     setIsAuthModalOpen(false);
 
-    const jumpTimer = window.setTimeout(() => setPhase('jump'), 420);
-    const readyTimer = window.setTimeout(() => {
-      setPhase('ready');
-      setIsAuthModalOpen(true);
-    }, 1050);
+    const timers = [
+      window.setTimeout(() => setPhase('walk'), 260),
+      window.setTimeout(() => setPhase('place'), 1700),
+      window.setTimeout(() => setPhase('open'), 2350),
+      window.setTimeout(() => {
+        setPhase('ready');
+        setIsAuthModalOpen(true);
+      }, 3050),
+    ];
 
-    return () => {
-      window.clearTimeout(jumpTimer);
-      window.clearTimeout(readyTimer);
-    };
+    return () => timers.forEach(window.clearTimeout);
   }, [mode, setAuthModalTab, setIsAuthModalOpen]);
 
   useEffect(() => {
@@ -30,13 +32,11 @@ export const AuthExperience: React.FC<{ mode: AuthMode }> = ({ mode }) => {
     window.location.assign('/');
   }, [phase, isAuthModalOpen]);
 
-  const goHome = () => {
-    window.location.assign('/');
-  };
+  const goHome = () => window.location.assign('/');
 
   const title = mode === 'login' ? 'WELCOME BACK' : 'CREATE YOUR ID';
   const subtitle = mode === 'login'
-    ? 'Booting your secure HelzerX environment'
+    ? 'Securely entering your HelzerX environment'
     : 'Preparing your secure HelzerX account';
 
   return (
@@ -60,38 +60,52 @@ export const AuthExperience: React.FC<{ mode: AuthMode }> = ({ mode }) => {
           </div>
         </div>
 
-        <div className="helzerx-console-wrap">
-          <div className="helzerx-console-glow" />
+        <div className="helzerx-delivery-scene" aria-hidden="true">
+          <div className="helzerx-floor-shadow" />
+          <div className="helzerx-floor-light" />
 
-          <div className="helzerx-console-shadow" />
-
-          <div className="helzerx-console">
-            <div className="helzerx-console-top">
-              <div className="helzerx-console-leds">
-                <i /><i /><i />
-              </div>
-              <span>HX-01</span>
-              <Gamepad2 className="h-4 w-4" />
-            </div>
-
-            <div className="helzerx-console-screen">
-              <div className="helzerx-screen-scan" />
-              <div className="helzerx-screen-logo">H</div>
-              <div className="helzerx-screen-title">{title}</div>
-              <div className="helzerx-screen-sub">{subtitle}</div>
-
-              <div className="helzerx-screen-status">
-                <span className="helzerx-status-dot" />
-                <span>{phase === 'ready' ? 'AUTH TERMINAL READY' : 'INITIALIZING...'}</span>
+          <div className="helzerx-box-stage">
+            <div className="helzerx-box-glow" />
+            <div className="helzerx-box">
+              <div className="helzerx-box-inside" />
+              <div className="helzerx-box-front" />
+              <div className="helzerx-box-side" />
+              <div className="helzerx-box-lid">
+                <div className="helzerx-box-lid-mark">H</div>
               </div>
             </div>
+          </div>
 
-            <div className="helzerx-console-front">
-              <div className="helzerx-console-slot" />
-              <div className="helzerx-console-controls">
-                <span /><span /><span />
-              </div>
+          <div className="helzerx-boy">
+            <div className="helzerx-boy-shadow" />
+            <div className="helzerx-boy-head">
+              <div className="helzerx-boy-hair" />
+              <div className="helzerx-boy-ear" />
+              <div className="helzerx-boy-face-light" />
             </div>
+            <div className="helzerx-boy-neck" />
+            <div className="helzerx-boy-torso">
+              <div className="helzerx-boy-jacket-highlight" />
+            </div>
+            <div className="helzerx-boy-arm helzerx-boy-arm-back" />
+            <div className="helzerx-boy-arm helzerx-boy-arm-front">
+              <div className="helzerx-boy-hand" />
+            </div>
+            <div className="helzerx-boy-leg helzerx-boy-leg-back">
+              <div className="helzerx-boy-shoe" />
+            </div>
+            <div className="helzerx-boy-leg helzerx-boy-leg-front">
+              <div className="helzerx-boy-shoe" />
+            </div>
+          </div>
+
+          <div className="helzerx-scene-caption">
+            <span className="helzerx-caption-dot" />
+            {phase === 'walk' && 'DELIVERY IN PROGRESS'}
+            {phase === 'place' && 'SECURE PACKAGE PLACED'}
+            {phase === 'open' && 'AUTH TERMINAL DEPLOYING'}
+            {phase === 'ready' && 'AUTH TERMINAL READY'}
+            {phase === 'boot' && 'INITIALIZING'}
           </div>
         </div>
 
@@ -115,7 +129,9 @@ export const AuthExperience: React.FC<{ mode: AuthMode }> = ({ mode }) => {
         <span>SECURE // FAST // YOURS</span>
       </div>
 
-      <AuthModal />
+      <div className={`helzerx-modal-reveal phase-${phase}`}>
+        <AuthModal />
+      </div>
     </main>
   );
 };
