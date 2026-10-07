@@ -194,7 +194,10 @@
 html:has(.helzerx-auth-stage),
 body:has(.helzerx-auth-stage),
 #root:has(.helzerx-auth-stage) {
-  background: #05070b !important;
+  background:
+    radial-gradient(circle at 18% 15%, rgba(191, 219, 254, 0.72), transparent 34%),
+    radial-gradient(circle at 84% 80%, rgba(219, 234, 254, 0.9), transparent 38%),
+    linear-gradient(135deg, #ffffff 0%, #f7fbff 48%, #eef7ff 100%) !important;
 }
 
 body:has(.helzerx-auth-stage) {
