@@ -11,9 +11,9 @@ app.use(express.json({ limit: '100kb' }));
 app.disable('x-powered-by');
 app.set('trust proxy', 1);
 
-const PORT = Number(process.env.PAYHERE_PORT || 5001);
-const PUBLIC_ORIGIN = String(process.env.PUBLIC_ORIGIN || 'https://arvex.host').replace(/\/$/, '');
-const INTERNAL_API_ORIGIN = String(process.env.INTERNAL_API_ORIGIN || 'http://127.0.0.1:5000').replace(/\/$/, '');
+const PORT = Number(process.env.AUTOMATION_PORT || 5001);
+const PUBLIC_ORIGIN = String(process.env.PUBLIC_ORIGIN || '').replace(/\/$/, '');
+const INTERNAL_API_ORIGIN = String(process.env.INTERNAL_API_ORIGIN || 'http://127.0.0.1:3000').replace(/\/$/, '');
 const PAYHERE_MERCHANT_ID = String(process.env.PAYHERE_MERCHANT_ID || '').trim();
 const PAYHERE_MERCHANT_SECRET = String(process.env.PAYHERE_MERCHANT_SECRET || '').trim();
 const PAYHERE_SANDBOX = String(process.env.PAYHERE_SANDBOX || 'true').toLowerCase() === 'true';
@@ -46,7 +46,7 @@ function payHash(orderId, amount, currency) { return md5(PAYHERE_MERCHANT_ID + o
 function verifyPayHere(body) { const local = md5(String(body.merchant_id || '') + String(body.order_id || '') + String(body.payhere_amount || '') + String(body.payhere_currency || '') + String(body.status_code || '') + md5(PAYHERE_MERCHANT_SECRET)); return local === String(body.md5sig || '').toUpperCase(); }
 function clientKey(req) { return String(req.headers['cf-connecting-ip'] || req.ip || 'unknown'); }
 function limited(req) { const key=clientKey(req), now=Date.now(), e=rate.get(key); if (!e || now-e.t>10*60*1000) { rate.set(key,{t:now,n:1}); return false; } e.n++; return e.n > 20; }
-function internal(req,res,next) { if (!INTERNAL_SECRET) return next(); if (crypto.timingSafeEqual(Buffer.from(String(req.headers['x-arvex-automation-secret']||'')), Buffer.from(INTERNAL_SECRET))) return next(); return res.status(401).json({ error:'Unauthorized automation request.' }); }
+function internal(req,res,next) { if (!INTERNAL_SECRET) return next(); const provided=Buffer.from(String(req.headers['x-arvex-automation-secret']||'')); const expected=Buffer.from(INTERNAL_SECRET); if (provided.length===expected.length && crypto.timingSafeEqual(provided, expected)) return next(); return res.status(401).json({ error:'Unauthorized automation request.' }); }
 async function cmsConfig() { const r=await fetch(`${INTERNAL_API_ORIGIN}/api/cms/config`); if(!r.ok) throw new Error('CMS configuration unavailable'); return r.json(); }
 function planCycleAmount(plan, cycle) { const base=Number(plan?.monthlyPrice || 0); if(cycle==='yearly') return Number((base*10).toFixed(2)); if(cycle==='quarterly') return Number((base*2.8).toFixed(2)); return Number(base.toFixed(2)); }
 function splitName(name='ArveX Customer') { const parts=String(name).trim().split(/\s+/); return { first_name: parts.shift() || 'ArveX', last_name: parts.join(' ') || 'Customer' }; }
