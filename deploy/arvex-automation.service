@@ -1,5 +1,5 @@
 [Unit]
-Description=HelzerX Discord and Pterodactyl Automation
+Description=ArveX Real Payment, Discord Ticket and Pterodactyl Automation
 After=network-online.target arvex-api.service
 Wants=network-online.target
 
@@ -7,16 +7,16 @@ Wants=network-online.target
 Type=simple
 User=root
 WorkingDirectory=/var/www/arvex
-EnvironmentFile=/var/www/helzerx/.env
-EnvironmentFile=-/var/www/helzerx/.env.automation
-ExecStart=/usr/bin/node /var/www/helzerx/automation/index.mjs
+EnvironmentFile=/var/www/arvex/.env
+EnvironmentFile=-/var/www/arvex/.env.automation
+ExecStart=/usr/bin/node /var/www/arvex/automation/index.mjs
 Restart=always
 RestartSec=3
 NoNewPrivileges=true
 PrivateTmp=true
 ProtectSystem=full
 ProtectHome=true
-ReadWritePaths=/var/www/helzerx/data/automation
+ReadWritePaths=/var/www/arvex/data/automation
 
 [Install]
 WantedBy=multi-user.target
