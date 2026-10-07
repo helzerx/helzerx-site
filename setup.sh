@@ -13,38 +13,87 @@ B=$'\033[1m'; D=$'\033[2m'; X=$'\033[0m'
 trap 'echo -e "\n${R}✖ Setup failed at line $LINENO${X}"; exit 1' ERR
 
 [[ $EUID -eq 0 ]] || { echo "Run as root: sudo bash setup.sh"; exit 1; }
-clear || true
-echo -e "${C}${B}"
-cat <<'ART'
-██╗  ██╗███████╗██╗     ███████╗██████╗ ██╗  ██╗
-██║  ██║██╔════╝██║     ╚══███╔╝██╔══██╗╚██╗██╔╝
-███████║█████╗  ██║       ███╔╝ ██████╔╝ ╚███╔╝
-██╔══██║██╔══╝  ██║      ███╔╝  ██╔══██╗ ██╔██╗
-██║  ██║███████╗███████╗███████╗██║  ██║██╔╝ ██╗
-╚═╝  ╚═╝╚══════╝╚══════╝╚══════╝╚═╝  ╚═╝╚═╝  ╚═╝
-ART
-echo -e "${X}${D}                 CLOUD • 3D PRODUCTION SETUP${X}"
+# ──────────────────────────────────────────────────────────────────────────────
+# HelzerX cinematic terminal splash — inspired by modern CLI installers.
+# No external packages are required; everything is rendered with ANSI truecolor.
+# ──────────────────────────────────────────────────────────────────────────────
+cleanup_terminal() { printf '\033[?25h\033[0m'; }
+trap cleanup_terminal EXIT
+printf '\033[?25l\033[2J\033[H'
 
-RED=$'\033[38;2;255;35;48m'; RED2=$'\033[38;2;160;0;10m'; RESET=$'\033[0m'
-logo_frames=(
-'       ██       ██\n       ██       ██\n       ███████████\n       ███████████\n       ██       ██\n       ██       ██'
-'      ███     ███\n      ███     ███\n      ███████████\n      ███████████\n      ███     ███\n      ███     ███'
-'        █████████\n       ██       ██\n       ██       ██\n       ███████████\n       ██       ██\n       ██       ██'
+H_FRAMES=(
+'          ██████            ██████
+          ██████            ██████
+          ████████████████████████
+          ████████████████████████
+          ██████            ██████
+          ██████            ██████'
+'        ████████          ████████
+        ████████          ████████
+        ██████████████████████████
+        ██████████████████████████
+        ████████          ████████
+        ████████          ████████'
+'      ████████████████████████████
+      ████████████████████████████
+       ████                  ████
+       ████                  ████
+       ████████████████████████████
+       ████████████████████████████'
+'        ████████
+        ████████
+        ████████
+        ████████
+        ████████
+        ████████'
+'       ████████████████████████
+       ████████████████████████
+       ████            ████████
+       ████            ████████
+       ████████████████████████
+       ████████████████████████'
+'        ████████          ████████
+        ████████          ████████
+        ██████████████████████████
+        ██████████████████████████
+        ████████          ████████
+        ████████          ████████'
 )
-for round in 1 2 3; do
-  for frame in "${logo_frames[@]}"; do
-    clear || true
-    printf '\n'
-    printf '%b\n' "${RED2}          ██████████████████${RESET}"
-    printf '%b\n' "${RED}${B}       $frame${RESET}"
-    printf '%b\n' "${RED2}          ██████████████████${RESET}"
-    printf '%b\n' "${RED}${B}             HELZERX${RESET}"
-    printf '%b\n' "${RED2}          3D CLOUD SETUP${RESET}"
-    sleep .13
+
+render_splash() {
+  local frame="$1" phase="$2"
+  printf '\033[2J\033[H\n\n'
+  printf '                  \033[38;2;75;0;0m████████████████████████████████████████\033[0m\n'
+  printf '               \033[38;2;145;0;8m████████████████████████████████████████████\033[0m\n\n'
+  printf '                    \033[38;2;255;45;55m%b\033[0m\n' "$frame"
+  printf '\n'
+  printf '                 \033[38;2;255;105;105m●\033[0m \033[1;38;2;255;45;55mH E L Z E R X\033[0m\n'
+  printf '                 \033[38;2;185;185;185mC L O U D   I N S T A L L E R\033[0m\n\n'
+  printf '             \033[38;2;110;110;110m%s\033[0m\n' "$phase"
+  printf '             \033[38;2;90;0;0m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\033[0m\n'
+}
+
+phases=(
+  "Initializing secure terminal..."
+  "Preparing HelzerX Cloud..."
+  "Loading production components..."
+  "Warming up deployment engine..."
+  "Almost ready..."
+)
+
+frame_count=\${#H_FRAMES[@]}
+phase_count=\${#phases[@]}
+for cycle in 1 2; do
+  for ((i=0; i<frame_count; i++)); do
+    phase_index=$(( (cycle * frame_count + i) % phase_count ))
+    render_splash "\${H_FRAMES[$i]}" "\${phases[$phase_index]}"
+    sleep 0.075
   done
 done
-clear || true
-printf '%b\n' "${RED}${B}        HELZERX CLOUD • 3D PRODUCTION SETUP${RESET}"
+
+printf '\033[2J\033[H\n'
+printf '        \033[1;38;2;255;45;55mHELZERX CLOUD\033[0m  \033[38;2;150;150;150m•\033[0m  \033[1m3D PRODUCTION SETUP\033[0m\n'
+printf '        \033[38;2;95;95;95m────────────────────────────────────────────────────\033[0m\n'
 log(){ echo -e "  ${G}✔${X} $*"; }
 ask(){ local p="$1" d="$2" v; read -r -p "  $p [$d]: " v; printf '%s' "${v:-$d}"; }
 ask_secret(){ local p="$1" d="$2" v; read -r -s -p "  $p [hidden]: " v; echo; printf '%s' "${v:-$d}"; }
