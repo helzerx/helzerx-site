@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-APP=/var/www/arvex
-SERVICE_SRC="$APP/deploy/arvex-payhere.service"
-SERVICE_DST=/etc/systemd/system/arvex-payhere.service
+APP=/var/www/helzerx
+SERVICE_SRC="$APP/deploy/arvex-automation.service"
+SERVICE_DST=/etc/systemd/system/helzerx-automation.service
 NGINX_MARKER='location ^~ /api/payments/'
 
 if [[ ! -f "$APP/.env" ]]; then
@@ -11,7 +11,7 @@ if [[ ! -f "$APP/.env" ]]; then
   exit 1
 fi
 
-required=(PAYHERE_MERCHANT_ID PAYHERE_MERCHANT_SECRET PAYHERE_SANDBOX PAYHERE_PORT PUBLIC_ORIGIN)
+required=(PAYHERE_MERCHANT_ID PAYHERE_MERCHANT_SECRET PAYHERE_SANDBOX PUBLIC_ORIGIN)
 for key in "${required[@]}"; do
   if ! grep -qE "^${key}=" "$APP/.env"; then
     echo "ERROR: Missing $key in .env"
@@ -30,14 +30,14 @@ chmod 700 "$APP/data"
 
 install -m 0644 "$SERVICE_SRC" "$SERVICE_DST"
 systemctl daemon-reload
-systemctl enable arvex-payhere.service
+systemctl enable helzerx-automation.service
 systemctl restart arvex-payhere.service
 
 # Add the PayHere proxy to the active ArveX HTTPS server once, without destroying
 # the existing Nginx configuration. The insertion is immediately before the
-# first closing brace of the 443 server block containing server_name arvex.host.
+# first closing brace of the 443 server block containing server_name helzerx.cyou.
 NGINX_FILE=""
-for candidate in /etc/nginx/sites-enabled/arvex.host /etc/nginx/sites-available/arvex.host; do
+for candidate in /etc/nginx/sites-enabled/helzerx.cyou /etc/nginx/sites-available/helzerx.cyou; do
   if [[ -f "$candidate" ]] && grep -q 'server_name arvex.host' "$candidate"; then
     NGINX_FILE="$candidate"
     break
@@ -97,5 +97,5 @@ systemctl --no-pager --full status arvex-payhere.service || true
 printf '\n=== PAYHERE HEALTH ===\n'
 curl -fsS --max-time 5 http://127.0.0.1:5001/api/payments/health || true
 printf '\n\n=== NGINX PAYHERE HEALTH ===\n'
-curl -fsS --max-time 10 https://arvex.host/api/payments/health || true
+curl -fsS --max-time 10 ${PUBLIC_ORIGIN}/api/payments/health || true
 printf '\n\nPAYHERE INSTALLATION COMPLETE\n'
