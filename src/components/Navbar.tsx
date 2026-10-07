@@ -48,19 +48,19 @@ export const Navbar: React.FC = () => {
   };
 
   return (
-    <header className="sticky top-0 z-50 w-full bg-[#1b4bd6]/90 backdrop-blur-xl border-b border-white/15 text-white">
+    <header className="sticky top-0 z-50 w-full border-b border-slate-200/80 bg-white/85 text-slate-800 shadow-[0_8px_30px_rgba(15,23,42,0.06)] backdrop-blur-xl">
       {/* Top Announcement Bar */}
       {isAnnouncementVisible && siteSettings.announcementActive && (
-        <div className="w-full bg-[#173eaf] border-b border-white/10 text-xs text-blue-100 py-1.5 px-4 flex items-center justify-between">
+        <div className="w-full border-b border-slate-200 bg-slate-50/90 py-1.5 px-4 text-xs text-slate-500 flex items-center justify-between">
           <div className="flex-1 text-center flex items-center justify-center gap-2">
             <span className="font-medium">{siteSettings.announcementText}</span>
-            <span className="font-mono font-bold bg-white/20 text-white px-2 py-0.5 rounded-full border border-white/30 text-[11px]">
+            <span className="font-mono font-bold bg-violet-50 text-violet-700 px-2 py-0.5 rounded-full border border-violet-100 text-[11px]">
               {siteSettings.announcementCoupon}
             </span>
           </div>
           <button
             onClick={dismissAnnouncement}
-            className="text-blue-200 hover:text-white p-1 transition-colors"
+            className="text-slate-400 hover:text-slate-700 p-1 transition-colors"
             title="Dismiss announcement"
           >
             <X className="w-3.5 h-3.5" />
@@ -81,16 +81,16 @@ export const Navbar: React.FC = () => {
             }}
             className="flex items-center gap-2.5 group cursor-pointer text-left"
           >
-            <div className="h-9 w-9 rounded-2xl bg-white text-blue-600 flex items-center justify-center font-black shadow-md shadow-black/10 group-hover:scale-105 transition-transform font-display text-xs">
+            <div className="h-9 w-9 rounded-2xl bg-gradient-to-br from-violet-500 to-indigo-600 text-white flex items-center justify-center font-black shadow-md shadow-violet-500/20 group-hover:scale-105 transition-transform font-display text-xs">
               HX
             </div>
-            <span className="text-xl font-extrabold tracking-tight text-white font-display">
+            <span className="text-xl font-extrabold tracking-tight text-slate-950 font-display">
               {siteSettings.brandName || 'HelzerX Cloud'}
             </span>
           </button>
 
           {/* Desktop Nav Items */}
-          <nav className="hidden lg:flex items-center gap-1 text-xs font-semibold text-blue-100">
+          <nav className="hidden lg:flex items-center gap-1 text-xs font-semibold text-slate-500">
             {/* Services Dropdown */}
             <div className="relative">
               <button
@@ -98,8 +98,8 @@ export const Navbar: React.FC = () => {
                 onClick={() => toggleDropdown('services')}
                 className={`flex items-center gap-1 px-3 py-2 rounded-full transition-colors ${
                   activeDropdown === 'services' || currentPage.startsWith('services')
-                    ? 'text-white bg-white/20'
-                    : 'hover:text-white hover:bg-white/10'
+                    ? 'text-violet-700 bg-violet-50'
+                    : 'hover:text-slate-900 hover:bg-slate-100'
                 }`}
               >
                 <span>Services</span>
@@ -172,7 +172,7 @@ export const Navbar: React.FC = () => {
                 navigateTo('plans');
                 closeDropdowns();
               }}
-              className="px-3 py-2 rounded-full hover:text-white hover:bg-white/10 transition"
+              className="px-3 py-2 rounded-full hover:text-slate-900 hover:bg-slate-100 transition"
             >
               Plans
             </button>
@@ -181,7 +181,7 @@ export const Navbar: React.FC = () => {
                 navigateTo('locations');
                 closeDropdowns();
               }}
-              className="px-3 py-2 rounded-full hover:text-white hover:bg-white/10 transition"
+              className="px-3 py-2 rounded-full hover:text-slate-900 hover:bg-slate-100 transition"
             >
               Locations
             </button>
@@ -190,7 +190,7 @@ export const Navbar: React.FC = () => {
                 navigateTo('pricing');
                 closeDropdowns();
               }}
-              className="px-3 py-2 rounded-full hover:text-white hover:bg-white/10 transition"
+              className="px-3 py-2 rounded-full hover:text-slate-900 hover:bg-slate-100 transition"
             >
               Pricing
             </button>
@@ -199,7 +199,7 @@ export const Navbar: React.FC = () => {
                 navigateTo('hardware');
                 closeDropdowns();
               }}
-              className="px-3 py-2 rounded-full hover:text-white hover:bg-white/10 transition"
+              className="px-3 py-2 rounded-full hover:text-slate-900 hover:bg-slate-100 transition"
             >
               Hardware
             </button>
@@ -208,7 +208,7 @@ export const Navbar: React.FC = () => {
                 navigateTo('support');
                 closeDropdowns();
               }}
-              className="px-3 py-2 rounded-full hover:text-white hover:bg-white/10 transition"
+              className="px-3 py-2 rounded-full hover:text-slate-900 hover:bg-slate-100 transition"
             >
               Support
             </button>
@@ -221,7 +221,7 @@ export const Navbar: React.FC = () => {
           <div className="relative hidden sm:block">
             <button
               onClick={() => setIsCurrencyDropdownOpen(!isCurrencyDropdownOpen)}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/15 hover:bg-white/25 border border-white/20 text-xs font-semibold transition"
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white hover:bg-slate-50 border border-slate-200 text-xs font-semibold transition"
             >
               <span>{currency.code}</span>
               <ChevronDown className="w-3 h-3 opacity-80" />
@@ -276,7 +276,7 @@ export const Navbar: React.FC = () => {
               <button
                 type="button"
                 onClick={logout}
-                className="p-2 rounded-full hover:bg-white/15 text-blue-200 hover:text-white transition"
+                className="p-2 rounded-full hover:bg-white/15 text-slate-400 hover:text-slate-700 transition"
                 title="Log out"
               >
                 <LogOut className="w-4 h-4" />
@@ -326,14 +326,14 @@ export const Navbar: React.FC = () => {
 
       {/* Mobile Drawer */}
       {isMobileMenuOpen && (
-        <div className="lg:hidden bg-[#173eaf] border-t border-white/10 px-4 py-6 space-y-4">
+        <div className="lg:hidden bg-white border-t border-slate-200 px-4 py-6 space-y-4">
           <div className="grid grid-cols-2 gap-2 text-xs font-bold">
             <button
               onClick={() => {
                 navigateTo('services-minecraft');
                 setIsMobileMenuOpen(false);
               }}
-              className="p-3 rounded-xl bg-white/10 text-left hover:bg-white/20"
+              className="p-3 rounded-xl bg-slate-50 text-left hover:bg-violet-50"
             >
               Minecraft Hosting
             </button>
@@ -342,7 +342,7 @@ export const Navbar: React.FC = () => {
                 navigateTo('services-vps');
                 setIsMobileMenuOpen(false);
               }}
-              className="p-3 rounded-xl bg-white/10 text-left hover:bg-white/20"
+              className="p-3 rounded-xl bg-slate-50 text-left hover:bg-violet-50"
             >
               Cloud VPS
             </button>
@@ -351,7 +351,7 @@ export const Navbar: React.FC = () => {
                 navigateTo('plans');
                 setIsMobileMenuOpen(false);
               }}
-              className="p-3 rounded-xl bg-white/10 text-left hover:bg-white/20"
+              className="p-3 rounded-xl bg-slate-50 text-left hover:bg-violet-50"
             >
               Game Plans
             </button>
@@ -360,7 +360,7 @@ export const Navbar: React.FC = () => {
                 navigateTo('locations');
                 setIsMobileMenuOpen(false);
               }}
-              className="p-3 rounded-xl bg-white/10 text-left hover:bg-white/20"
+              className="p-3 rounded-xl bg-slate-50 text-left hover:bg-violet-50"
             >
               Locations
             </button>
@@ -374,7 +374,7 @@ export const Navbar: React.FC = () => {
                   onClick={() => {
                     window.location.assign('/client-dashboard');
                   }}
-                  className="flex-1 rounded-full bg-[#0b0f19] py-3 text-center text-xs font-bold text-white shadow-md flex items-center justify-center gap-2"
+                  className="flex-1 rounded-full bg-slate-950 py-3 text-center text-xs font-bold text-white shadow-md flex items-center justify-center gap-2"
                 >
                   <UserIcon className="w-3.5 h-3.5 text-blue-400" />
                   <span>Client Area ({user.name})</span>
@@ -386,7 +386,7 @@ export const Navbar: React.FC = () => {
                       navigateTo('admin');
                       setIsMobileMenuOpen(false);
                     }}
-                    className="px-4 rounded-full bg-cyan-400 text-black py-3 text-center text-xs font-black shadow-md flex items-center justify-center gap-1.5"
+                    className="px-4 rounded-full bg-violet-100 text-violet-700 py-3 text-center text-xs font-black shadow-md flex items-center justify-center gap-1.5"
                   >
                     <Shield className="w-3.5 h-3.5" />
                     <span>Admin</span>
@@ -422,9 +422,9 @@ export const Navbar: React.FC = () => {
                     setIsAuthModalOpen(true);
                     setIsMobileMenuOpen(false);
                   }}
-                  className="px-3 rounded-full bg-white/10 text-white py-3 text-center text-xs font-bold shadow-md flex items-center justify-center gap-1 cursor-pointer"
+                  className="px-3 rounded-full bg-slate-100 text-slate-700 py-3 text-center text-xs font-bold shadow-md flex items-center justify-center gap-1 cursor-pointer"
                 >
-                  <Shield className="w-3.5 h-3.5 text-cyan-400" />
+                  <Shield className="w-3.5 h-3.5 text-violet-600" />
                   <span>Admin</span>
                 </button>
               </div>
