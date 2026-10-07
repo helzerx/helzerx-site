@@ -1,4 +1,4 @@
-name: ArveX Validation
+name: HelzerX Validation
 
 on:
   push:
@@ -24,5 +24,5 @@ jobs:
         run: npm run lint
       - name: Production build
         run: npm run build
-      - name: Server syntax validation
-        run: node --check server.js && node --check payhere-server.js
+      - name: Automation syntax validation
+        run: node --check automation/index.mjs
