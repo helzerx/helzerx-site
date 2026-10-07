@@ -75,6 +75,7 @@ export const AdminPage: React.FC = () => {
     tickets,
     invoices,
     deployedServers,
+    serverNodes,
     siteSettings,
     updateSiteSettings,
     siteImages,
@@ -549,7 +550,7 @@ export const AdminPage: React.FC = () => {
                     onChange={(e) =>
                       setEditingPlan({ ...editingPlan, gameId: e.target.value })
                     }
-                    className="w-full bg-[#0a0b12] border border-slate-200 rounded-xl p-3 text-xs text-slate-900"
+                    className="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 text-xs text-slate-900"
                   >
                     {games.map((g) => (
                       <option key={g.id} value={g.id}>
@@ -1223,7 +1224,7 @@ export const AdminPage: React.FC = () => {
               <input
                 type="text"
                 value={siteImages.heroBackgroundUrl}
-                onChange={(e) => (value) => updateSiteImages({ heroBackgroundUrl: value })(e.target.value)}
+                onChange={(e) => updateSiteImages({ heroBackgroundUrl: e.target.value })}
                 className="w-full bg-[#0a0b12] border border-slate-200 rounded-xl p-3 text-xs text-slate-900 font-mono mb-3"
               />
               <button
