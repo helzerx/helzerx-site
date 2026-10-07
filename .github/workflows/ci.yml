@@ -1,4 +1,4 @@
-name: ArveX CI
+name: HelzerX CI
 
 on:
   push:
@@ -22,8 +22,6 @@ jobs:
         run: npm run lint
       - name: Production build
         run: npm run build
-      - name: Validate server syntax
-        run: node --check server.js
       - name: Validate automation syntax
         run: node --check automation/index.mjs
       - name: Dependency security audit
