@@ -86,6 +86,7 @@ function MainWebsite() {
 
   useEffect(()=>{
     const checkAuthRoute=()=>{
+      if (authMode) return;
       const hash = window.location.hash.toLowerCase();
       if(hash.includes('login') || hash.includes('signin')){
         setAuthModalTab('login');
@@ -98,7 +99,7 @@ function MainWebsite() {
     checkAuthRoute();
     window.addEventListener('hashchange', checkAuthRoute);
     return () => window.removeEventListener('hashchange', checkAuthRoute);
-  },[setAuthModalTab,setIsAuthModalOpen]);
+  },[authMode,setAuthModalTab,setIsAuthModalOpen]);
 
   useEffect(()=>{
     const params=new URLSearchParams(window.location.search);
