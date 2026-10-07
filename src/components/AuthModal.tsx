@@ -498,21 +498,14 @@ const AuthModalContent: React.FC = () => {
     }
   };
 
-  // Social Auth Click Handlers
+  // Social buttons stay fail-closed until a real provider OAuth/OIDC flow is configured.
   const handleSocialClick = (provider: 'google' | 'apple' | 'facebook') => {
     setErrorMsg('');
     setSuccessMsg('');
-    const defaults = {
-      google: { email: 'alex.perera@gmail.com', name: 'Alex Perera' },
-      apple: { email: 'alex.cloud@icloud.com', name: 'Alex Apple ID' },
-      facebook: { email: 'alex.perera@facebook.com', name: 'Alex Perera' },
-    };
-    setSocialPrompt({
-      open: true,
-      provider,
-      email: defaults[provider].email,
-      name: defaults[provider].name,
-    });
+    setSocialPrompt(null);
+    setErrorMsg(
+      `${provider[0].toUpperCase() + provider.slice(1)} sign-in is not enabled yet. Please use email authentication with verification.`
+    );
   };
 
   const confirmSocialAuth = async () => {
