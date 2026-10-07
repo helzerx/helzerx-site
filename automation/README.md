@@ -1,6 +1,6 @@
-# ArveX real payment automation
+# HelzerX payment automation
 
-This service is intentionally separate from the CMS/Auth API on port 5000. It handles only payment automation, Discord order tickets and Pterodactyl provisioning.
+This service is intentionally separate from the CMS/Auth API on port 3000. It handles only payment automation, Discord order tickets and Pterodactyl provisioning.
 
 ## Production flow
 
@@ -28,7 +28,7 @@ Pterodactyl requires an Application API token with permission to create users an
 
 ## Nginx
 
-Include `deploy/nginx-arvex-automation.conf` inside the HTTPS `arvex.host` server block, before a generic `/api/` proxy that points at port 5000. Then test and reload Nginx.
+Include `deploy/nginx-arvex-automation.conf` inside the HTTPS `helzerx.cyou` server block, before a generic `/api/` proxy that points at port 5000. Then test and reload Nginx.
 
 ## systemd
 
