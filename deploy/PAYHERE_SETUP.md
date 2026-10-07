@@ -1,17 +1,17 @@
-# ArveX PayHere deployment
+# HelzerX PayHere deployment
 
 The repository now contains a separate server-side PayHere service so the PayHere Merchant Secret never reaches the Vite bundle.
 
 ## 1. Environment
 
-Add these values to `/var/www/arvex/.env`:
+Add these values to `/var/www/helzerx/.env`:
 
 ```env
 PAYHERE_MERCHANT_ID=YOUR_MERCHANT_ID
 PAYHERE_MERCHANT_SECRET=YOUR_MERCHANT_SECRET
 PAYHERE_SANDBOX=true
-PAYHERE_PORT=5001
-INTERNAL_API_ORIGIN=http://127.0.0.1:5000
+AUTOMATION_PORT=5001
+INTERNAL_API_ORIGIN=http://127.0.0.1:3000
 PAYHERE_USD_TO_LKR=300
 ```
 
@@ -22,7 +22,7 @@ Keep `PAYHERE_MERCHANT_SECRET` server-only.
 ```bash
 cd /var/www/arvex
 git pull origin main
-cp deploy/arvex-payments.service /etc/systemd/system/arvex-payments.service
+cp deploy/helzerx-automation.service /etc/systemd/system/arvex-payments.service
 systemctl daemon-reload
 systemctl enable --now arvex-payments
 systemctl status arvex-payments --no-pager
@@ -30,7 +30,7 @@ systemctl status arvex-payments --no-pager
 
 ## 3. Nginx
 
-Inside the existing HTTPS `server {}` block for `arvex.host`, add the location from `deploy/nginx-payhere-location.conf` **before** the generic `/api/` location.
+Inside the existing HTTPS `server {}` block for `helzerx.cyou`, add the location from `deploy/nginx-payhere-location.conf` **before** the generic `/api/` location.
 
 Then:
 
