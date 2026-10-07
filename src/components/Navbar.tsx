@@ -288,8 +288,7 @@ export const Navbar: React.FC = () => {
               <button
                 type="button"
                 onClick={() => {
-                  setAuthModalTab('login');
-                  setIsAuthModalOpen(true);
+                  window.location.assign('/login');
                 }}
                 className="flex items-center gap-2 rounded-full bg-[#0b0f19] px-4 py-2 text-xs font-bold text-white hover:bg-slate-900 shadow-md transition cursor-pointer"
               >
@@ -306,8 +305,7 @@ export const Navbar: React.FC = () => {
               <button
                 type="button"
                 onClick={() => {
-                  setAuthModalTab('register');
-                  setIsAuthModalOpen(true);
+                  window.location.assign('/signup');
                 }}
                 className="hidden sm:inline-flex items-center gap-1.5 rounded-full bg-gradient-to-r from-[#7934f5] to-[#591bc9] hover:from-[#6a25e6] hover:to-[#4a12b8] px-5 py-2 text-xs font-extrabold text-white shadow-md shadow-purple-500/25 transition cursor-pointer"
               >
@@ -400,8 +398,7 @@ export const Navbar: React.FC = () => {
                 <button
                   type="button"
                   onClick={() => {
-                    setAuthModalTab('login');
-                    setIsAuthModalOpen(true);
+                    window.location.assign('/login');
                     setIsMobileMenuOpen(false);
                   }}
                   className="flex-1 rounded-full bg-[#0b0f19] py-3 text-center text-xs font-bold text-white shadow-md cursor-pointer"
@@ -411,8 +408,7 @@ export const Navbar: React.FC = () => {
                 <button
                   type="button"
                   onClick={() => {
-                    setAuthModalTab('register');
-                    setIsAuthModalOpen(true);
+                    window.location.assign('/signup');
                     setIsMobileMenuOpen(false);
                   }}
                   className="flex-1 rounded-full bg-gradient-to-r from-[#7934f5] to-[#591bc9] py-3 text-center text-xs font-bold text-white shadow-md cursor-pointer"
