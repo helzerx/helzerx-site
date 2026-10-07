@@ -38,6 +38,7 @@ import { InvoiceModal } from './components/InvoiceModal';
 import { TicketModal } from './components/TicketModal';
 import { BlogPostModal } from './components/BlogPostModal';
 import { AdminPanelModal } from './components/AdminPanelModal';
+import { AuthExperience } from './components/AuthExperience';
 
 function MaintenancePage({ openAdminLogin }: { openAdminLogin: () => void }) {
   return <main className="relative flex min-h-screen items-center justify-center overflow-hidden bg-[#07080c] px-6 py-20 text-center">
@@ -66,6 +67,14 @@ function MainWebsite() {
   const [maintenanceMode,setMaintenanceMode]=useState(false);
   const [maintenanceBusy,setMaintenanceBusy]=useState(false);
   const openAdminLogin=()=>{setAuthModalTab('admin');setIsAuthModalOpen(true)};
+
+  const authPath = window.location.pathname.toLowerCase();
+  const authHash = window.location.hash.toLowerCase();
+  const authMode = authPath === '/login' || authHash.includes('/login') || authHash === '#login' || authHash.includes('signin')
+    ? 'login'
+    : authPath === '/signup' || authHash.includes('/signup') || authHash === '#signup' || authHash.includes('register')
+    ? 'register'
+    : null;
 
   useEffect(()=>{
     let cancelled=false;
@@ -115,6 +124,8 @@ function MainWebsite() {
   const renderActivePage=()=>{switch(currentPage){
     case 'dynamic-plan':return <PlanDetailPage/>;case 'dynamic-game':return <GameDetailPage/>;case 'services':return <ServicesPage/>;case 'services-minecraft':return <MinecraftServicePage/>;case 'services-game-hosting':return <GameHostingServicePage/>;case 'services-vps':return <VpsServicePage/>;case 'services-vds':return <VdsServicePage/>;case 'services-web-hosting':return <WebHostingServicePage/>;case 'services-bot-hosting':return <BotHostingServicePage/>;case 'plans':case 'pricing':return <PricingPage/>;case 'games':return <GamesPage/>;case 'domains':return <DomainsPage/>;case 'checkout':return <CheckoutPage/>;case 'payment':return <PayHerePaymentPage/>;case 'support':case 'tickets':return <SupportPage/>;case 'status':return <StatusPage/>;case 'knowledgebase':return <KnowledgebasePage/>;case 'partners':return <PartnersPage/>;case 'affiliates':return <AffiliatesPage/>;case 'contact':return <ContactPage/>;case 'about':return <AboutPage/>;case 'terms':case 'privacy':case 'sla':case 'acceptable-use':return <LegalPage/>;case 'locations':return <LocationsPage/>;case 'hardware':return <HardwarePage/>;case 'billing':return <BillingPage/>;case 'blog':return <BlogPage/>;case 'dashboard':return <DashboardPage/>;case 'client-dashboard':return <ClientDashboardPage/>;case 'admin':if(currentUser?.role==='admin')return <AdminPage/>;return <MaintenancePage openAdminLogin={openAdminLogin}/>;case 'home':default:return <HomePage/>;
   }};
+
+  if(authMode) return <AuthExperience mode={authMode} />;
 
   if(!authReady)return <div className="flex min-h-screen items-center justify-center bg-[#07080c] text-slate-400"><div className="text-center"><div className="mx-auto mb-4 h-8 w-8 animate-spin rounded-full border-2 border-purple-500/20 border-t-purple-400"/><p className="text-xs font-semibold uppercase tracking-[0.2em]">Loading HelzerX</p></div></div>;
   if(maintenanceMode&&currentUser?.role!=='admin')return <><MaintenancePage openAdminLogin={openAdminLogin}/><AuthModal/></>;
