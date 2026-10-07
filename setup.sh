@@ -25,16 +25,26 @@ cat <<'ART'
 ART
 echo -e "${X}${D}                 CLOUD • 3D PRODUCTION SETUP${X}"
 
-cube=(
-'       +------+      +------+\n      /      /|     /      /|\n     +------+ |    +------+ |\n     |      | +    |      | +\n     |      |/     |      |/\n     +------+      +------+'
-'          /\\n         /  \\\n    _____/____\\_____\n   /    /    /    /|\n  +----+----+----+ |\n  |    |    |    | /\n  +----+----+----+/'
-'       +-----------+\n      /|          /|\n     / |         / |\n    +--+--------+  |\n    |  |        |  |\n    |  +--------|--+\n    | /         | /\n    |/          |/\n    +-----------+'
+RED=$'\033[38;2;255;35;48m'; RED2=$'\033[38;2;160;0;10m'; RESET=$'\033[0m'
+logo_frames=(
+'       ██       ██\n       ██       ██\n       ███████████\n       ███████████\n       ██       ██\n       ██       ██'
+'      ███     ███\n      ███     ███\n      ███████████\n      ███████████\n      ███     ███\n      ███     ███'
+'        █████████\n       ██       ██\n       ██       ██\n       ███████████\n       ██       ██\n       ██       ██'
 )
-for i in 0 1 2 0 1 2; do
-  printf "\033[11A\033[2K"; printf "%b\n" "${M}${cube[$i]}${X}"; sleep .10
+for round in 1 2 3; do
+  for frame in "${logo_frames[@]}"; do
+    clear || true
+    printf '\n'
+    printf '%b\n' "${RED2}          ██████████████████${RESET}"
+    printf '%b\n' "${RED}${B}       $frame${RESET}"
+    printf '%b\n' "${RED2}          ██████████████████${RESET}"
+    printf '%b\n' "${RED}${B}             HELZERX${RESET}"
+    printf '%b\n' "${RED2}          3D CLOUD SETUP${RESET}"
+    sleep .13
+  done
 done
-echo
-
+clear || true
+printf '%b\n' "${RED}${B}        HELZERX CLOUD • 3D PRODUCTION SETUP${RESET}"
 log(){ echo -e "  ${G}✔${X} $*"; }
 ask(){ local p="$1" d="$2" v; read -r -p "  $p [$d]: " v; printf '%s' "${v:-$d}"; }
 ask_secret(){ local p="$1" d="$2" v; read -r -s -p "  $p [hidden]: " v; echo; printf '%s' "${v:-$d}"; }
