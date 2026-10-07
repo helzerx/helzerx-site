@@ -38,6 +38,7 @@ import { InvoiceModal } from './components/InvoiceModal';
 import { TicketModal } from './components/TicketModal';
 import { BlogPostModal } from './components/BlogPostModal';
 import { AdminPanelModal } from './components/AdminPanelModal';
+import { AuthExperience } from './components/AuthExperience';
 
 function MaintenancePage({ openAdminLogin }: { openAdminLogin: () => void }) {
   return <main className="relative flex min-h-screen items-center justify-center overflow-hidden bg-[#07080c] px-6 py-20 text-center">
@@ -123,4 +124,9 @@ function MainWebsite() {
   </div>;
 }
 
-export default function App(){return <AppProvider><MainWebsite/></AppProvider>}
+export default function App(){
+  const path=window.location.pathname.toLowerCase().replace(/\\/+$/, '') || '/';
+  if(path==='/login') return <AppProvider><AuthExperience mode="login" /></AppProvider>;
+  if(path==='/signup' || path==='/register') return <AppProvider><AuthExperience mode="register" /></AppProvider>;
+  return <AppProvider><MainWebsite/></AppProvider>;
+}
