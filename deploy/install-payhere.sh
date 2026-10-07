@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-APP=/var/www/helzerx
+APP=${APP:-/var/www/arvex}
 SERVICE_SRC="$APP/deploy/arvex-automation.service"
 SERVICE_DST=/etc/systemd/system/helzerx-automation.service
 NGINX_MARKER='location ^~ /api/payments/'
